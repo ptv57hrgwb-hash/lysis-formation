@@ -1,1 +1,128 @@
 
+// ----- Mobile nav
+const toggle = document.querySelector(".nav-toggle");
+const menu = document.querySelector("#navMenu");
+
+if (toggle && menu) {
+  toggle.addEventListener("click", () => {
+    const open = menu.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(open));
+  });
+
+  // Close menu when clicking a link (mobile)
+  menu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", () => {
+      menu.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+  });
+}
+
+// ----- Reveal on scroll (repeatable)
+const revealEls = Array.from(document.querySelectorAll("[data-reveal]"));
+
+function applyVisibility() {
+  const vh = window.innerHeight || 0;
+  revealEls.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const visible = rect.top < vh * 0.88 && rect.bottom > vh * 0.12;
+    el.classList.toggle("is-visible", visible);
+  });
+}
+
+window.addEventListener("scroll", applyVisibility, { passive: true });
+window.addEventListener("resize", applyVisibility);
+applyVisibility();
+
+// ----- Year in footer
+const yearEl = document.getElementById("year");
+if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+// ----- Level picker (Hero)
+const levelButtons = Array.from(document.querySelectorAll(".seg-btn"));
+const helper = document.getElementById("levelHelper");
+const metricLevel = document.getElementById("metricLevel");
+const metricFocus = document.getElementById("metricFocus");
+const metricResult = document.getElementById("metricResult");
+const heroChecklist = document.getElementById("heroChecklist");
+
+const copyByLevel = {
+  debutant: {
+    helper: "On pose des bases solides et on vous rend autonome sur Logic Pro 11, avec une méthode simple et efficace.",
+    level: "Débutant",
+    focus: "Autonomie & workflow",
+    result: "Un projet propre et clair",
+    list: [
+      "Interface & workflow Logic Pro",
+      "Enregistrer / éditer proprement",
+      "Structurer un morceau",
+      "Exporter sans surprise"
+    ]
+  },
+  intermediaire: {
+    helper: "Vous avez déjà fait des morceaux : on structure votre méthode, on gagne du temps, on améliore la cohérence.",
+    level: "Intermédiaire",
+    focus: "Méthode & décisions rapides",
+    result: "Un rendu plus cohérent",
+    list: [
+      "Gain staging & équilibre",
+      "Espace (pan / depth)",
+      "Automation & transitions",
+      "Organisation de session"
+    ]
+  },
+  avance: {
+    helper: "Objectif cap pro : translation, profondeur, glue, signature. Un mix qui tient partout et une méthode durable.",
+    level: "Avancé / Pro",
+    focus: "Finition & signature",
+    result: "Mix final “tient partout”",
+    list: [
+      "Translation & références",
+      "Balance tonale & profondeur",
+      "Glue / cohésion",
+      "Pré-master propre"
+    ]
+  }
+};
+
+function setChecklist(items) {
+  if (!heroChecklist) return;
+  heroChecklist.innerHTML = items.map(i => `<li>${i}</li>`).join("");
+}
+
+function setActiveLevel(level) {
+  levelButtons.forEach(btn => {
+    const active = btn.dataset.level === level;
+    btn.classList.toggle("is-active", active);
+    btn.setAttribute("aria-selected", String(active));
+  });
+
+  const data = copyByLevel[level] || copyByLevel.debutant;
+
+  if (helper) helper.textContent = data.helper;
+  if (metricLevel) metricLevel.textContent = data.level;
+  if (metricFocus) metricFocus.textContent = data.focus;
+  if (metricResult) metricResult.textContent = data.result;
+  setChecklist(data.list);
+
+  // Highlight corresponding parcours card briefly
+  const card = document.querySelector(`[data-level-card="${level}"]`);
+  if (card) {
+    card.classList.add("pulse");
+    setTimeout(() => card.classList.remove("pulse"), 450);
+  }
+}
+
+levelButtons.forEach(btn => {
+  btn.addEventListener("click", () => setActiveLevel(btn.dataset.level));
+});
+
+// Set default
+setActiveLevel("debutant");
+
+// Subtle pulse class injected via JS for zero extra CSS file edits
+const style = document.createElement("style");
+style.textContent = `
+  .pulse{ outline: 2px solid rgba(104,242,198,.35); outline-offset: 3px; }
+`;
+document.head.appendChild(style);
