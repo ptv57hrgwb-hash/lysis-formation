@@ -1,160 +1,150 @@
-/* ============ MENU MOBILE ============ */
-(function () {
-  const toggle = document.getElementById('navToggle');
-  const nav = document.getElementById('nav');
-  if (!toggle || !nav) return;
+// Lysis Formation — script.js
 
-  toggle.addEventListener('click', () => {
-    const open = nav.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+// Mobile nav
+const toggle = document.querySelector(".nav-toggle");
+const menu = document.querySelector("#navMenu");
+
+if (toggle && menu) {
+  toggle.addEventListener("click", () => {
+    const open = menu.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", String(open));
   });
 
-  // Ferme le menu quand on clique un lien
-  nav.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      nav.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
+  menu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", () => {
+      menu.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
     });
   });
-})();
+}
 
-/* ============ HERO : NIVEAUX ============ */
-(function () {
-  const pills = document.querySelectorAll('.pill');
-  const levelText = document.getElementById('levelText');
-  const miniLevel = document.getElementById('miniLevel');
-  const miniFocus = document.getElementById('miniFocus');
-  const miniResult = document.getElementById('miniResult');
-  const miniBullets = document.getElementById('miniBullets');
+// Reveal on scroll (repeatable)
+const revealEls = Array.from(document.querySelectorAll("[data-reveal]"));
+function applyVisibility() {
+  const vh = window.innerHeight || 0;
+  revealEls.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const visible = rect.top < vh * 0.88 && rect.bottom > vh * 0.12;
+    el.classList.toggle("is-visible", visible);
+  });
+}
+window.addEventListener("scroll", applyVisibility, { passive: true });
+window.addEventListener("resize", applyVisibility);
+applyVisibility();
 
-  if (!pills.length || !levelText || !miniLevel || !miniFocus || !miniResult || !miniBullets) return;
+// Year
+const yearEl = document.getElementById("year");
+if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  const data = {
-    debutant: {
-      label: 'Débutant',
-      text: "On pose des bases solides et on rend autonome sur Logic Pro 11, avec une méthode simple et efficace.",
-      focus: "Autonomie & workflow",
-      result: "Un projet propre et clair",
-      bullets: [
-        "Interface & workflow Logic Pro",
-        "Enregistrer / éditer proprement",
-        "Structurer un morceau",
-        "Exporter sans surprise"
-      ]
-    },
-    intermediaire: {
-      label: 'Intermédiaire',
-      text: "On structure le mix et la production : équilibre, espace, organisation, automatisations utiles.",
-      focus: "Mix & structure",
-      result: "Un mix cohérent",
-      bullets: [
-        "Gain staging & équilibre",
-        "Espace (pan / depth)",
-        "Automations",
-        "Organisation de session"
-      ]
-    },
-    avance: {
-      label: 'Avancé / Pro',
-      text: "On vise la finition : translation, cohérence, direction artistique et routine de contrôle.",
-      focus: "Finition & signature",
-      result: "Un rendu pro",
-      bullets: [
-        "Glue & profondeur",
-        "Balance tonale",
-        "Translation (tous systèmes)",
-        "Pré-master propre"
-      ]
-    }
-  };
+// Level picker (Hero)
+const levelButtons = Array.from(document.querySelectorAll(".seg-btn"));
+const helper = document.getElementById("levelHelper");
+const metricLevel = document.getElementById("metricLevel");
+const metricFocus = document.getElementById("metricFocus");
+const metricResult = document.getElementById("metricResult");
+const heroChecklist = document.getElementById("heroChecklist");
 
-  function setLevel(key){
-    const d = data[key] || data.debutant;
-
-    pills.forEach(p => p.classList.toggle('is-active', p.dataset.level === key));
-    levelText.textContent = d.text;
-    miniLevel.textContent = d.label;
-    miniFocus.textContent = d.focus;
-    miniResult.textContent = d.result;
-
-    miniBullets.innerHTML = '';
-    d.bullets.forEach(t => {
-      const s = document.createElement('span');
-      s.textContent = t;
-      miniBullets.appendChild(s);
-    });
+const copyByLevel = {
+  debutant: {
+    helper: "Bases solides + autonomie sur Logic Pro 11, avec une méthode simple et efficace.",
+    level: "Débutant",
+    focus: "Autonomie & workflow",
+    result: "Un projet propre et clair",
+    list: ["Interface & workflow Logic Pro", "Enregistrer / éditer proprement", "Structurer un morceau", "Exporter sans surprise"]
+  },
+  intermediaire: {
+    helper: "Organisation + méthode : décider plus vite et obtenir un rendu plus cohérent.",
+    level: "Intermédiaire",
+    focus: "Méthode & décisions",
+    result: "Un rendu plus cohérent",
+    list: ["Gain staging & équilibre", "Espace (pan / depth)", "Automation & transitions", "Organisation de session"]
+  },
+  avance: {
+    helper: "Cap pro : translation, profondeur, glue, signature — un rendu qui tient partout.",
+    level: "Avancé / Pro",
+    focus: "Finition & signature",
+    result: "Mix final “tient partout”",
+    list: ["Translation & références", "Balance tonale & profondeur", "Glue / cohésion", "Pré-master propre"]
   }
+};
 
-  pills.forEach(p => p.addEventListener('click', () => setLevel(p.dataset.level)));
-  setLevel('debutant');
-})();
+function setChecklist(items) {
+  if (!heroChecklist) return;
+  heroChecklist.innerHTML = items.map(i => `<li>${i}</li>`).join("");
+}
 
-/* ============ REVEAL AU SCROLL ============ */
-(function () {
-  const items = document.querySelectorAll('.reveal');
-  if (!items.length) return;
+function setActiveLevel(level) {
+  levelButtons.forEach(btn => {
+    const active = btn.dataset.level === level;
+    btn.classList.toggle("is-active", active);
+    btn.setAttribute("aria-selected", String(active));
+  });
 
+  const data = copyByLevel[level] || copyByLevel.debutant;
+  if (helper) helper.textContent = data.helper;
+  if (metricLevel) metricLevel.textContent = data.level;
+  if (metricFocus) metricFocus.textContent = data.focus;
+  if (metricResult) metricResult.textContent = data.result;
+  setChecklist(data.list);
+}
+
+levelButtons.forEach(btn => btn.addEventListener("click", () => setActiveLevel(btn.dataset.level)));
+setActiveLevel("debutant");
+
+// Sticky story blur + left replacement + bubbles
+const story = document.querySelector(".sticky-story");
+if (story) {
+  const steps = Array.from(story.querySelectorAll("[data-step]"));
+  const leftItems = Array.from(document.querySelectorAll(".sticky-left__item"));
+
+  // Steps appear
   const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('is-in');
+    entries.forEach(e => e.target.classList.toggle("is-visible", e.isIntersecting));
+  }, { threshold: 0.25 });
+  steps.forEach(s => io.observe(s));
+
+  function setLeftIndex(idx) {
+    leftItems.forEach((el) => {
+      const n = Number(el.dataset.left);
+      el.classList.toggle("is-active", n === idx);
     });
-  }, { threshold: 0.12 });
-
-  items.forEach(el => io.observe(el));
-})();
-
-/* ============ CORRECTION #1 : TEXTE UNIQUEMENT SI PHOTO VIDE ============ */
-/*
-  Fonctionnement :
-  - .hero-bg possède data-hero-image="./assets/hero.jpg"
-  - On tente de charger cette image.
-     - si elle charge : on applique background-image + on cache overlay
-     - si elle échoue / absent : overlay affiché (photo "vide")
-*/
-(function () {
-  const heroBg = document.querySelector('.hero-bg');
-  const overlay = document.querySelector('.hero-photo-text[data-empty-only="true"]');
-  if (!heroBg || !overlay) return;
-
-  const src = heroBg.getAttribute('data-hero-image');
-
-  // Si pas de src => "photo vide"
-  if (!src) {
-    overlay.classList.add('is-visible');
-    return;
   }
-
-  const img = new Image();
-  img.onload = () => {
-    heroBg.style.backgroundImage = `url("${src}")`;
-    overlay.classList.remove('is-visible'); // ✅ overlay OFF si photo OK
-  };
-  img.onerror = () => {
-    overlay.classList.add('is-visible');    // ✅ overlay ON si photo vide / erreur
-  };
-  img.src = src;
-})();
-
-/* ============ Bonus : léger blur au scroll (optionnel, propre) ============ */
-(function () {
-  const heroBg = document.querySelector('.hero-bg');
-  if (!heroBg) return;
 
   let ticking = false;
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
 
-    requestAnimationFrame(() => {
-      const y = window.scrollY || 0;
-      const blur = Math.min(10, y / 120);         // 0 → 10
-      const scale = 1.02 + Math.min(0.04, y / 4000);
-      heroBg.style.filter = `saturate(1.05) contrast(1.02) blur(${blur}px)`;
-      heroBg.style.transform = `scale(${scale})`;
-      ticking = false;
-    });
-  };
+  function updateStory() {
+    ticking = false;
+    const rect = story.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-})();
+    const total = rect.height - vh;
+    const raw = (-rect.top) / (total <= 0 ? 1 : total);
+    const t = Math.max(0, Math.min(1, raw));
+
+    // Smoothstep
+    const eased = t * t * (3 - 2 * t);
+
+    // Blur image
+    const blurPx = 24 * eased; // 0..24px
+    story.style.setProperty("--blur", `${blurPx}px`);
+
+    // Left replacement (4 states)
+    const idx =
+      t < 0.18 ? 0 :
+      t < 0.44 ? 1 :
+      t < 0.70 ? 2 : 3;
+
+    setLeftIndex(idx);
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(updateStory);
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  updateStory();
+}
