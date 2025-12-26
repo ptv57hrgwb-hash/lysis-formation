@@ -1,4 +1,4 @@
-/* Lysis Formation — script.js */
+/* Lysis Formation — script.js (Safari iOS fixes + reliable step buttons) */
 (() => {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -35,7 +35,7 @@
     document.addEventListener("keydown", (e) => e.key === "Escape" && closeMenu());
   }
 
-  // ===== Reveal on scroll (generic)
+  // ===== Reveal on scroll
   const revealEls = $$("[data-reveal]");
   if (revealEls.length) {
     const revealIO = new IntersectionObserver(
@@ -109,10 +109,11 @@
 
     if (heroChecklist) heroChecklist.innerHTML = data.checklist.map((t) => `<li>${t}</li>`).join("");
   };
+
   levelBtns.forEach((btn) => btn.addEventListener("click", () => setLevel(btn.dataset.level)));
   setLevel("debutant");
 
-  // ===== Method section: Desktop “super” / Mobile “tabs”
+  // ===== Method section logic
   const story = $(".sticky-story");
   const media = $(".sticky-story__media");
   const steps = $$("[data-step]", story || document);
@@ -163,7 +164,7 @@
     activateMobileTabs(idx);
   };
 
-  // --- Safari-safe scroll with offset (header + tabs)
+  // --- Safari-safe scroll with offset (header + mobile tabs)
   const getScrollOffset = () => {
     const h = header ? Math.round(header.getBoundingClientRect().height) : 0;
     const m = (mmMobile.matches && methodMobile)
@@ -185,28 +186,40 @@
     return Number.isFinite(idx) && idx >= 0 ? idx : 0;
   };
 
-  // Force the step visible BEFORE scrolling (fix “buttons don’t bring bubble correctly”)
-  const goToStep = (idx) => {
-    idx = Math.max(0, Math.min(steps.length - 1, idx));
-    currentIdx = idx;
+  let currentIdx = 0;
 
+  const setPanelsVisibility = (idx) => {
+    if (!steps.length) return;
     if (!mmMobile.matches) {
       steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
     } else {
       steps.forEach((s) => s.classList.add("is-visible"));
     }
-
-    activateStepUI(idx);
-    scrollToTarget(steps[idx]);
   };
 
-  // Click bindings
+  // Force UI then scroll (buttons reliable)
+  const goToStep = (idx) => {
+    idx = Math.max(0, Math.min(steps.length - 1, idx));
+    currentIdx = idx;
+
+    setPanelsVisibility(idx);
+    activateStepUI(idx);
+
+    // Defer a tick so Safari applies classes before scrolling
+    requestAnimationFrame(() => scrollToTarget(steps[idx]));
+  };
+
+  // Click bindings (stop default + propagation)
   const bindButtons = (btns) => {
     btns.forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         const targetSel = btn.dataset.target;
         const target = targetSel ? $(targetSel) : null;
         if (!target) return;
+
         const idx = indexFromTarget(target);
         goToStep(idx);
       });
@@ -216,17 +229,19 @@
   bindButtons(mobileTabs);
 
   if (story && steps.length) {
-    // ----- Replace IntersectionObserver “in view” by scroll logic (Safari)
     let raf = 0;
-    let currentIdx = 0;
 
+    // Safari iOS: compute in-view via scroll (more stable than IO)
     const computeInView = () => {
       const rect = story.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // Enter a bit later, leave a bit earlier (feel less “too early / too late”)
-      const enterLine = vh * 0.18; // section top must pass this
-      const leaveLine = vh * 0.40; // section bottom must be under this
+      // enters slightly later
+      const enterLine = vh * 0.22;
+
+      // exits earlier (was too late on iOS)
+      const leaveLine = vh * 0.80;
+
       const inview = rect.top <= enterLine && rect.bottom >= leaveLine;
 
       story.classList.toggle("is-inview", inview);
@@ -234,10 +249,9 @@
     };
 
     const pickActiveStep = () => {
-      // Choose the panel whose center is closest to viewport center
       const mid = (window.innerHeight || 1) * 0.52;
 
-      let bestIdx = 0;
+      let best = 0;
       let bestDist = Infinity;
 
       for (let i = 0; i < steps.length; i++) {
@@ -246,10 +260,10 @@
         const dist = Math.abs(center - mid);
         if (dist < bestDist) {
           bestDist = dist;
-          bestIdx = i;
+          best = i;
         }
       }
-      return bestIdx;
+      return best;
     };
 
     const onScroll = () => {
@@ -263,12 +277,7 @@
         const idx = pickActiveStep();
         if (idx !== currentIdx) {
           currentIdx = idx;
-
-          if (!mmMobile.matches) {
-            steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
-          } else {
-            steps.forEach((s) => s.classList.add("is-visible"));
-          }
+          setPanelsVisibility(idx);
           activateStepUI(idx);
         }
 
@@ -288,13 +297,17 @@
       });
     };
 
-    // Initial state
-    steps.forEach((s, i) => s.classList.toggle("is-visible", mmMobile.matches ? true : i === 0));
+    // Init
+    setPanelsVisibility(0);
     activateStepUI(0);
     computeInView();
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+
+    // iOS Safari: handle orientation change quirks
+    window.addEventListener("orientationchange", () => setTimeout(onScroll, 50));
+
     onScroll();
   }
 })();
