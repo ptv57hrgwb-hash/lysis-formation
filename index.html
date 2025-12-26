@@ -461,7 +461,7 @@
               <div class="contact-row">
                 <div class="contact-label">Email</div>
                 <div class="contact-value">
-                  <a href="mailto:lysis-asso@gmail.com">lysis-asso@gmail.com</a>
+                  <a href="mailto:lysis.asso@gmail.com">lysis.asso@gmail.com</a>
                 </div>
               </div>
 
@@ -471,10 +471,75 @@
               </div>
             </div>
 
-            <div class="contact-actions">
-              <a class="btn btn-primary" href="mailto:lysis-asso@gmail.com?subject=Demande%20formation%20Lysis">Envoyer un email</a>
-              <a class="btn btn-ghost" href="#top">Revenir en haut</a>
-            </div>
+            <!-- Formspree form -->
+            <form
+              id="contactForm"
+              class="contact-form"
+              action="https://formspree.io/f/xaqyqneg"
+              method="POST"
+              novalidate
+            >
+              <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" />
+              <input type="hidden" name="_subject" value="Demande formation — Lysis Formation" />
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="cf-name">Nom</label>
+                  <input id="cf-name" name="name" type="text" autocomplete="name" required />
+                </div>
+
+                <div class="field">
+                  <label for="cf-email">Email</label>
+                  <input id="cf-email" name="email" type="email" autocomplete="email" required />
+                </div>
+
+                <div class="field field-full">
+                  <label for="cf-level">Niveau</label>
+                  <select id="cf-level" name="niveau" required>
+                    <option value="" selected disabled>Choisir…</option>
+                    <option>Débutant</option>
+                    <option>Intermédiaire</option>
+                    <option>Avancé</option>
+                    <option>Pro</option>
+                  </select>
+                </div>
+
+                <div class="field field-full">
+                  <label for="cf-goal">Objectif</label>
+                  <input
+                    id="cf-goal"
+                    name="objectif"
+                    type="text"
+                    placeholder="Ex: sortir un EP, améliorer le mix, routine d’exports…"
+                    required
+                  />
+                </div>
+
+                <div class="field field-full">
+                  <label for="cf-session">Avez-vous une session Logic Pro à analyser ?</label>
+                  <select id="cf-session" name="session_logicpro" required>
+                    <option value="" selected disabled>Choisir…</option>
+                    <option>Oui</option>
+                    <option>Non</option>
+                  </select>
+                </div>
+
+                <div class="field field-full">
+                  <label for="cf-message">Message</label>
+                  <textarea id="cf-message" name="message" rows="5" required></textarea>
+                </div>
+              </div>
+
+              <div class="contact-actions">
+                <button class="btn btn-primary" type="submit">Envoyer la demande</button>
+                <a class="btn btn-ghost" href="mailto:lysis.asso@gmail.com?subject=Demande%20formation%20Lysis">
+                  Envoyer un email
+                </a>
+                <a class="btn btn-ghost" href="#top">Revenir en haut</a>
+              </div>
+
+              <p id="formStatus" class="form-status" role="status" aria-live="polite"></p>
+            </form>
           </div>
 
           <div class="contact-side">
@@ -515,11 +580,64 @@
           <div class="footer-bottom">
             <span>© <span id="year"></span> Lysis</span>
             <span class="dot">•</span>
-            <span>Contact : <a href="mailto:lysis-asso@gmail.com">lysis-asso@gmail.com</a></span>
+            <span>Contact : <a href="mailto:lysis.asso@gmail.com">lysis.asso@gmail.com</a></span>
           </div>
         </footer>
       </div>
     </section>
   </main>
+
+  <!-- Formspree AJAX submit -->
+  <script>
+    (function () {
+      const form = document.getElementById("contactForm");
+      const statusEl = document.getElementById("formStatus");
+      if (!form || !statusEl) return;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+          statusEl.textContent = "⚠️ Merci de compléter tous les champs.";
+          return;
+        }
+
+        statusEl.textContent = "Envoi en cours…";
+
+        const formData = new FormData(form);
+        if ((formData.get("_gotcha") || "").toString().trim() !== "") return;
+
+        const data = Object.fromEntries(formData.entries());
+        delete data._gotcha;
+
+        try {
+          const res = await fetch(form.action, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+          if (res.ok) {
+            form.reset();
+            statusEl.textContent = "✅ Message envoyé. Je reviens vers vous rapidement.";
+          } else {
+            let msg = "❌ Oups, impossible d’envoyer le message. Réessaie.";
+            try {
+              const payload = await res.json();
+              if (payload && payload.errors && payload.errors[0] && payload.errors[0].message) {
+                msg = "❌ " + payload.errors[0].message;
+              }
+            } catch (_) {}
+            statusEl.textContent = msg;
+          }
+        } catch (err) {
+          statusEl.textContent = "❌ Problème réseau. Réessaie dans un instant.";
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
