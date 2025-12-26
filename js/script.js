@@ -1,4 +1,4 @@
-/* Lysis Formation — script.js (Safari Mac: click 1/2/3 shows steps immediately) */
+/* Lysis Formation — script.js (Safari Mac: click 1/2/3 => step 1/2/3 visible immediately) */
 (() => {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -35,7 +35,7 @@
     document.addEventListener("keydown", (e) => e.key === "Escape" && closeMenu());
   }
 
-  // ===== Reveal on scroll
+  // ===== Reveal on scroll (generic)
   const revealEls = $$("[data-reveal]");
   if (revealEls.length) {
     const revealIO = new IntersectionObserver(
@@ -71,14 +71,24 @@
       helper: "Décisions plus rapides, session plus propre, rendu plus cohérent.",
       focus: "Équilibre & espace",
       result: "Un mix lisible et stable",
-      checklist: ["Gain staging & équilibre", "Pan / profondeur", "Automation utile", "Organisation de session"],
+      checklist: [
+        "Gain staging & équilibre",
+        "Pan / profondeur",
+        "Automation utile",
+        "Organisation de session",
+      ],
     },
     avance: {
       label: "Avancé / Pro",
       helper: "Finition : translation, cohérence, routine de validation et exports propres.",
       focus: "Finition & validation",
       result: "Un rendu fiable",
-      checklist: ["Balance tonale & références", "Contrôle et validation", "Exports (stems / versions)", "Routine de fin"],
+      checklist: [
+        "Balance tonale & références",
+        "Contrôle et validation",
+        "Exports (stems / versions)",
+        "Routine de fin",
+      ],
     },
   };
 
@@ -103,21 +113,23 @@
   levelBtns.forEach((btn) => btn.addEventListener("click", () => setLevel(btn.dataset.level)));
   setLevel("debutant");
 
-  // ===== Méthode (sticky) — clicks + scroll sync
+  // ===== Sticky story (Méthode)
   const story = $(".sticky-story");
-  const media = $(".sticky-story__media");
-  const steps = $$("[data-step]", story || document);
+  if (!story) return;
+
+  const media = $(".sticky-story__media", story);
+  const steps = $$("article.story-panel[data-step]", story);
 
   const header = $("#siteHeader");
   const methodMobile = $("#methodMobile");
   const mmMobile = window.matchMedia("(max-width: 760px)");
 
-  // Desktop buttons 1/2/3 (new layout)
-  const navItems = $$(".sticky-nav__item", story || document);
+  // Desktop nav 1/2/3
+  const navItems = $$(".sticky-nav__item", story);
   const stickySub = $("#stickySub");
 
   // Mobile tabs
-  const mobileTabs = $$(".method-tab", story || document);
+  const mobileTabs = $$(".method-tab", story);
   const mobileSub = $("#methodMobileSub");
 
   const SUBS = [
@@ -126,38 +138,13 @@
     "Validation et exports : translation, checklist finale, livrables prêts.",
   ];
 
-  // If your HTML is still the older version, you can also add buttons with data-step-jump="0|1|2"
-  const compatJumpBtns = $$("[data-step-jump]", story || document);
+  let currentIdx = 0;
 
-  const setProgress = (idx) => {
-    const pct = idx <= 0 ? 0 : idx === 1 ? 50 : 100;
-    if (story) {
-      story.style.setProperty("--progress", `${pct}%`);
-      story.style.setProperty("--mprogress", `${pct}%`);
-    }
-  };
-
-  const activateDesktopLeft = (idx) => {
-    navItems.forEach((it) => it.classList.remove("is-active"));
-    const el = navItems.find((x) => Number(x.dataset.left) === idx);
-    if (el) el.classList.add("is-active");
-    if (stickySub && SUBS[idx]) stickySub.textContent = SUBS[idx];
-  };
-
-  const activateMobileTabs = (idx) => {
-    mobileTabs.forEach((t) => {
-      const active = Number(t.dataset.step) === idx;
-      t.classList.toggle("is-active", active);
-      t.setAttribute("aria-selected", active ? "true" : "false");
-    });
-    if (mobileSub && SUBS[idx]) mobileSub.textContent = SUBS[idx];
-  };
-
-  const activateStepUI = (idx) => {
-    setProgress(idx);
-    activateDesktopLeft(idx);
-    activateMobileTabs(idx);
-  };
+  // Lock scroll-sync after click (so click shows immediately, not overwritten)
+  let lockUntil = 0;
+  const nowMs = () => (window.performance?.now?.() || Date.now());
+  const lockFor = (ms = 900) => (lockUntil = nowMs() + ms);
+  const isLocked = () => nowMs() < lockUntil;
 
   const getScrollOffset = () => {
     const h = header ? Math.round(header.getBoundingClientRect().height) : 0;
@@ -172,165 +159,168 @@
     window.scrollTo({ top: Math.max(0, y), behavior: smooth ? "smooth" : "auto" });
   };
 
-  let currentIdx = 0;
+  const setProgress = (idx) => {
+    const pct = idx <= 0 ? 0 : idx === 1 ? 50 : 100;
+    story.style.setProperty("--progress", `${pct}%`);
+    story.style.setProperty("--mprogress", `${pct}%`);
+  };
+
+  const activateDesktop = (idx) => {
+    navItems.forEach((it) => it.classList.remove("is-active"));
+    const el = navItems.find((x) => Number(x.dataset.left) === idx);
+    if (el) el.classList.add("is-active");
+    if (stickySub && SUBS[idx]) stickySub.textContent = SUBS[idx];
+  };
+
+  const activateMobile = (idx) => {
+    mobileTabs.forEach((t) => {
+      const active = Number(t.dataset.step) === idx;
+      t.classList.toggle("is-active", active);
+      t.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    if (mobileSub && SUBS[idx]) mobileSub.textContent = SUBS[idx];
+  };
+
+  const activateUI = (idx) => {
+    setProgress(idx);
+    activateDesktop(idx);
+    activateMobile(idx);
+  };
 
   const setPanelsVisibility = (idx) => {
     if (!steps.length) return;
+
     if (!mmMobile.matches) {
+      // Desktop: only one panel visible
       steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
     } else {
+      // Mobile: keep them all visible (light version)
       steps.forEach((s) => s.classList.add("is-visible"));
     }
   };
 
-  // ===== IMPORTANT FIX:
-  // After clicking 1/2/3, prevent scroll-sync from overriding the chosen step until scroll finishes.
-  let lockUntil = 0;
-  const lockFor = (ms = 900) => {
-    lockUntil = (window.performance?.now?.() || Date.now()) + ms;
-  };
-  const isLocked = () => {
-    const now = window.performance?.now?.() || Date.now();
-    return now < lockUntil;
-  };
-
+  // Click => show NOW + scroll to it
   const goToStep = (idx) => {
     idx = Math.max(0, Math.min(steps.length - 1, idx));
     currentIdx = idx;
 
-    // Show immediately
+    // Ensure the section feels active immediately
+    story.classList.add("is-inview");
+
+    // Show immediately (no waiting for scroll)
     setPanelsVisibility(idx);
-    activateStepUI(idx);
+    activateUI(idx);
 
-    // Ensure left is visible instantly (no need to wait for next scroll tick)
-    if (story) story.classList.add("is-inview");
-
-    // Lock sync for a moment so user sees the change right away
+    // Avoid scroll-sync overriding right after click
     lockFor(950);
 
-    // Scroll with offset (Safari friendly) + one extra nudge
+    // Safari-friendly: scroll + nudge
     requestAnimationFrame(() => {
       scrollToEl(steps[idx]);
-      setTimeout(() => scrollToEl(steps[idx]), 60);
+      setTimeout(() => scrollToEl(steps[idx]), 80);
     });
   };
 
-  // Desktop nav 1/2/3: map index directly via data-left
-  if (navItems.length) {
-    navItems.forEach((btn) => {
-      const handler = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const idx = Number(btn.dataset.left);
-        if (!Number.isFinite(idx)) return;
-        goToStep(idx);
-      };
-      btn.addEventListener("click", handler);
-      btn.addEventListener("pointerup", handler);
-    });
-  }
-
-  // Mobile tabs: map index via data-step
-  if (mobileTabs.length) {
-    mobileTabs.forEach((btn) => {
-      const handler = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const idx = Number(btn.dataset.step);
-        if (!Number.isFinite(idx)) return;
-        goToStep(idx);
-      };
-      btn.addEventListener("click", handler);
-      btn.addEventListener("pointerup", handler);
-    });
-  }
-
-  // Compatibility: any element with data-step-jump="0|1|2"
-  if (compatJumpBtns.length) {
-    compatJumpBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const idx = Number(btn.dataset.stepJump);
-        if (!Number.isFinite(idx)) return;
-        goToStep(idx);
-      });
-    });
-  }
-
-  if (story && steps.length) {
-    let raf = 0;
-
-    const computeInView = () => {
-      const rect = story.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-
-      // Enters slightly later, exits earlier (nice on Safari)
-      const enterLine = vh * 0.22;
-      const leaveLine = vh * 0.80;
-
-      const inview = rect.top <= enterLine && rect.bottom >= leaveLine;
-      story.classList.toggle("is-inview", inview);
-      return inview;
+  // Bind desktop 1/2/3 (data-left = 0/1/2)
+  navItems.forEach((btn) => {
+    const handler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const idx = Number(btn.dataset.left);
+      if (!Number.isFinite(idx)) return;
+      goToStep(idx);
     };
+    btn.addEventListener("click", handler);
+    btn.addEventListener("pointerup", handler);
+  });
 
-    const pickActiveStep = () => {
-      const mid = (window.innerHeight || 1) * 0.52;
-      let best = 0;
-      let bestDist = Infinity;
+  // Bind mobile tabs (data-step = 0/1/2)
+  mobileTabs.forEach((btn) => {
+    const handler = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const idx = Number(btn.dataset.step);
+      if (!Number.isFinite(idx)) return;
+      goToStep(idx);
+    };
+    btn.addEventListener("click", handler);
+    btn.addEventListener("pointerup", handler);
+  });
 
-      for (let i = 0; i < steps.length; i++) {
-        const r = steps[i].getBoundingClientRect();
-        const center = r.top + r.height * 0.5;
-        const dist = Math.abs(center - mid);
-        if (dist < bestDist) {
-          bestDist = dist;
-          best = i;
-        }
+  // Scroll-sync (when user scrolls normally)
+  let raf = 0;
+
+  const computeInView = () => {
+    const rect = story.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
+
+    // Enters later, exits earlier (Safari friendly)
+    const enterLine = vh * 0.22;
+    const leaveLine = vh * 0.80;
+
+    const inview = rect.top <= enterLine && rect.bottom >= leaveLine;
+    story.classList.toggle("is-inview", inview);
+    return inview;
+  };
+
+  const pickActiveStep = () => {
+    const mid = (window.innerHeight || 1) * 0.52;
+    let best = 0;
+    let bestDist = Infinity;
+
+    for (let i = 0; i < steps.length; i++) {
+      const r = steps[i].getBoundingClientRect();
+      const center = r.top + r.height * 0.5;
+      const dist = Math.abs(center - mid);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = i;
       }
-      return best;
-    };
+    }
+    return best;
+  };
 
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
+  const onScroll = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
 
-        const inview = computeInView();
-        if (!inview) return;
+      const inview = computeInView();
+      if (!inview) return;
 
-        // While locked (after click), do NOT override selected step
-        if (isLocked()) return;
+      // Do not override after click
+      if (isLocked()) return;
 
-        const idx = pickActiveStep();
-        if (idx !== currentIdx) {
-          currentIdx = idx;
-          setPanelsVisibility(idx);
-          activateStepUI(idx);
-        }
+      const idx = pickActiveStep();
+      if (idx !== currentIdx) {
+        currentIdx = idx;
+        setPanelsVisibility(idx);
+        activateUI(idx);
+      }
 
-        // Blur dynamics (desktop only)
-        if (media && !mmMobile.matches) {
-          const rect = story.getBoundingClientRect();
-          const vh = window.innerHeight || 1;
-          const start = vh * 0.05;
-          const end = vh * 0.95;
-          const t = (start - rect.top) / Math.max(1, (rect.height - (end - start)));
-          const p = Math.min(1, Math.max(0, t));
-          const blur = (1 - p) * 2;
-          media.style.setProperty("--blur", `${blur.toFixed(2)}px`);
-        } else if (media) {
-          media.style.setProperty("--blur", "0px");
-        }
-      });
-    };
+      // Blur dynamics (desktop only)
+      if (media && !mmMobile.matches) {
+        const rect = story.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        const start = vh * 0.05;
+        const end = vh * 0.95;
+        const t = (start - rect.top) / Math.max(1, (rect.height - (end - start)));
+        const p = Math.min(1, Math.max(0, t));
+        const blur = (1 - p) * 2;
+        media.style.setProperty("--blur", `${blur.toFixed(2)}px`);
+      } else if (media) {
+        media.style.setProperty("--blur", "0px");
+      }
+    });
+  };
 
-    // Init
-    setPanelsVisibility(0);
-    activateStepUI(0);
-    computeInView();
+  // Init
+  setPanelsVisibility(0);
+  activateUI(0);
+  computeInView();
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    onScroll();
-  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  window.addEventListener("orientationchange", () => setTimeout(onScroll, 80));
+  onScroll();
 })();
