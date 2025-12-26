@@ -1,4 +1,3 @@
-
 // ----- Mobile nav
 const toggle = document.querySelector(".nav-toggle");
 const menu = document.querySelector("#navMenu");
@@ -48,7 +47,7 @@ const heroChecklist = document.getElementById("heroChecklist");
 
 const copyByLevel = {
   debutant: {
-    helper: "On pose des bases solides et on vous rend autonome sur Logic Pro 11, avec une méthode simple et efficace.",
+    helper: "On pose des bases solides et on rend autonome sur Logic Pro 11, avec une méthode simple et efficace.",
     level: "Débutant",
     focus: "Autonomie & workflow",
     result: "Un projet propre et clair",
@@ -60,9 +59,9 @@ const copyByLevel = {
     ]
   },
   intermediaire: {
-    helper: "Vous avez déjà fait des morceaux : on structure votre méthode, on gagne du temps, on améliore la cohérence.",
+    helper: "Méthode, organisation, rendu plus cohérent : arrêter de tâtonner et décider plus vite.",
     level: "Intermédiaire",
-    focus: "Méthode & décisions rapides",
+    focus: "Méthode & décisions",
     result: "Un rendu plus cohérent",
     list: [
       "Gain staging & équilibre",
@@ -72,7 +71,7 @@ const copyByLevel = {
     ]
   },
   avance: {
-    helper: "Objectif cap pro : translation, profondeur, glue, signature. Un mix qui tient partout et une méthode durable.",
+    helper: "Cap pro : translation, profondeur, glue, signature. Un mix qui tient partout et une méthode durable.",
     level: "Avancé / Pro",
     focus: "Finition & signature",
     result: "Mix final “tient partout”",
@@ -105,7 +104,6 @@ function setActiveLevel(level) {
   if (metricResult) metricResult.textContent = data.result;
   setChecklist(data.list);
 
-  // Highlight corresponding parcours card briefly
   const card = document.querySelector(`[data-level-card="${level}"]`);
   if (card) {
     card.classList.add("pulse");
@@ -117,12 +115,49 @@ levelButtons.forEach(btn => {
   btn.addEventListener("click", () => setActiveLevel(btn.dataset.level));
 });
 
-// Set default
 setActiveLevel("debutant");
 
-// Subtle pulse class injected via JS for zero extra CSS file edits
 const style = document.createElement("style");
-style.textContent = `
-  .pulse{ outline: 2px solid rgba(104,242,198,.35); outline-offset: 3px; }
-`;
+style.textContent = `.pulse{ outline: 2px solid rgba(104,242,198,.35); outline-offset: 3px; }`;
 document.head.appendChild(style);
+
+// ===== Sticky story blur (Apple-like) =====
+const story = document.querySelector(".sticky-story");
+if (story) {
+  const steps = Array.from(story.querySelectorAll("[data-step]"));
+
+  // Steps appear
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => e.target.classList.toggle("is-visible", e.isIntersecting));
+  }, { threshold: 0.25 });
+  steps.forEach(s => io.observe(s));
+
+  // Blur progress
+  let ticking = false;
+
+  function updateStory() {
+    ticking = false;
+    const rect = story.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
+
+    const total = rect.height - vh;
+    const raw = (-rect.top) / (total <= 0 ? 1 : total);
+    const t = Math.max(0, Math.min(1, raw));
+
+    const eased = t * t * (3 - 2 * t);
+    const blurPx = 18 * eased; // 0..18px
+
+    story.style.setProperty("--blur", `${blurPx}px`);
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(updateStory);
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  updateStory();
+}
