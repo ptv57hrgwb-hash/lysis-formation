@@ -733,3 +733,13 @@ img, svg{ max-width:100%; height:auto; display:block; }
     filter:none !important;
   }
 }
+/* --- FIX Safari scroll / ancres méthode --- */
+.story-panel{
+  scroll-margin-top: 140px; /* desktop: laisse la place au header sticky */
+}
+
+@media (max-width: 760px){
+  .story-panel{
+    scroll-margin-top: 190px; /* mobile: header + tabs méthode */
+  }
+}
