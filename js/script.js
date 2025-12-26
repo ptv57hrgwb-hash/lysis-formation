@@ -1,166 +1,179 @@
-// Lysis Formation — script.js
+/* Lysis Formation — script.js */
+(() => {
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-// Mobile nav
-const toggle = document.querySelector(".nav-toggle");
-const menu = document.querySelector("#navMenu");
+  const onReady = (fn) => {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn, { once: true });
+    else fn();
+  };
 
-if (toggle && menu) {
-  toggle.addEventListener("click", () => {
-    const open = menu.classList.toggle("is-open");
-    toggle.setAttribute("aria-expanded", String(open));
-  });
+  onReady(() => {
+    // ===== Year
+    const yearEl = $("#year");
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  menu.querySelectorAll("a").forEach(a => {
-    a.addEventListener("click", () => {
-      menu.classList.remove("is-open");
-      toggle.setAttribute("aria-expanded", "false");
-    });
-  });
-}
+    // ===== Mobile nav
+    const navToggle = $(".nav-toggle");
+    const navMenu = $("#navMenu");
+    const navLinks = navMenu ? $$("a", navMenu) : [];
 
-// Reveal on scroll (repeatable)
-const revealEls = Array.from(document.querySelectorAll("[data-reveal]"));
-function applyVisibility() {
-  const vh = window.innerHeight || 0;
-  revealEls.forEach(el => {
-    const rect = el.getBoundingClientRect();
-    const visible = rect.top < vh * 0.88 && rect.bottom > vh * 0.12;
-    el.classList.toggle("is-visible", visible);
-  });
-}
-window.addEventListener("scroll", applyVisibility, { passive: true });
-window.addEventListener("resize", applyVisibility);
-applyVisibility();
+    const closeMenu = () => {
+      if (!navMenu || !navToggle) return;
+      navMenu.classList.remove("is-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    };
 
-// Year
-const yearEl = document.getElementById("year");
-if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+    const openMenu = () => {
+      if (!navMenu || !navToggle) return;
+      navMenu.classList.add("is-open");
+      navToggle.setAttribute("aria-expanded", "true");
+    };
 
-// Level picker (Hero)
-const levelButtons = Array.from(document.querySelectorAll(".seg-btn"));
-const helper = document.getElementById("levelHelper");
-const metricLevel = document.getElementById("metricLevel");
-const metricFocus = document.getElementById("metricFocus");
-const metricResult = document.getElementById("metricResult");
-const heroChecklist = document.getElementById("heroChecklist");
+    if (navToggle && navMenu) {
+      navToggle.addEventListener("click", () => {
+        const isOpen = navMenu.classList.contains("is-open");
+        if (isOpen) closeMenu();
+        else openMenu();
+      });
 
-const copyByLevel = {
-  debutant: {
-    helper: "Bases solides + autonomie sur Logic Pro 11, avec une méthode simple et efficace.",
-    level: "Débutant",
-    focus: "Autonomie & workflow",
-    result: "Un projet propre et clair",
-    list: [
-      "Interface & workflow Logic Pro",
-      "Enregistrer / éditer proprement",
-      "Structurer un morceau",
-      "Exporter sans surprise"
-    ]
-  },
-  intermediaire: {
-    helper: "Organisation + méthode : décider plus vite et obtenir un rendu plus cohérent.",
-    level: "Intermédiaire",
-    focus: "Méthode & décisions",
-    result: "Un rendu plus cohérent",
-    list: [
-      "Gain staging & équilibre",
-      "Espace (pan / depth)",
-      "Automation & transitions",
-      "Organisation de session"
-    ]
-  },
-  avance: {
-    helper: "Cap pro : translation, profondeur, glue, signature — un rendu qui tient partout.",
-    level: "Avancé / Pro",
-    focus: "Finition & signature",
-    result: "Mix final “tient partout”",
-    list: [
-      "Translation & références",
-      "Balance tonale & profondeur",
-      "Glue / cohésion",
-      "Pré-master propre"
-    ]
-  }
-};
+      navLinks.forEach((a) => a.addEventListener("click", closeMenu));
 
-function setChecklist(items) {
-  if (!heroChecklist) return;
-  heroChecklist.innerHTML = items.map(i => `<li>${i}</li>`).join("");
-}
+      document.addEventListener("click", (e) => {
+        if (!navMenu.classList.contains("is-open")) return;
+        const t = e.target;
+        if (t === navToggle || navToggle.contains(t)) return;
+        if (t === navMenu || navMenu.contains(t)) return;
+        closeMenu();
+      });
 
-function setActiveLevel(level) {
-  levelButtons.forEach(btn => {
-    const active = btn.dataset.level === level;
-    btn.classList.toggle("is-active", active);
-    btn.setAttribute("aria-selected", String(active));
-  });
-
-  const data = copyByLevel[level] || copyByLevel.debutant;
-  if (helper) helper.textContent = data.helper;
-  if (metricLevel) metricLevel.textContent = data.level;
-  if (metricFocus) metricFocus.textContent = data.focus;
-  if (metricResult) metricResult.textContent = data.result;
-  setChecklist(data.list);
-}
-
-levelButtons.forEach(btn => btn.addEventListener("click", () => setActiveLevel(btn.dataset.level)));
-setActiveLevel("debutant");
-
-// Sticky story blur + left replacement + bubbles
-const story = document.querySelector(".sticky-story");
-if (story) {
-  const steps = Array.from(story.querySelectorAll("[data-step]"));
-  const leftItems = Array.from(document.querySelectorAll(".sticky-left__item"));
-
-  // Steps appear
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => e.target.classList.toggle("is-visible", e.isIntersecting));
-  }, { threshold: 0.25 });
-  steps.forEach(s => io.observe(s));
-
-  function setLeftIndex(idx) {
-    leftItems.forEach((el) => {
-      const n = Number(el.dataset.left);
-      el.classList.toggle("is-active", n === idx);
-    });
-  }
-
-  let ticking = false;
-
-  function updateStory() {
-    ticking = false;
-    const rect = story.getBoundingClientRect();
-    const vh = window.innerHeight || 1;
-
-    const total = rect.height - vh;
-    const raw = (-rect.top) / (total <= 0 ? 1 : total);
-    const t = Math.max(0, Math.min(1, raw));
-
-    // Smoothstep
-    const eased = t * t * (3 - 2 * t);
-
-    // Blur image
-    const blurPx = 24 * eased; // 0..24px
-    story.style.setProperty("--blur", `${blurPx}px`);
-
-    // Left replacement (4 states)
-    const idx =
-      t < 0.18 ? 0 :
-      t < 0.44 ? 1 :
-      t < 0.70 ? 2 : 3;
-
-    setLeftIndex(idx);
-  }
-
-  function onScroll() {
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(updateStory);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeMenu();
+      });
     }
-  }
 
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-  updateStory();
-}
+    // ===== Reveal (sections + hero)
+    const revealEls = $$("[data-reveal]");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add("is-visible");
+        });
+      },
+      { threshold: 0.18 }
+    );
+    revealEls.forEach((el) => io.observe(el));
 
+    // ===== Story steps reveal + sync left stack
+    const steps = $$("[data-step]");
+    const leftItems = $$(".sticky-left__item");
+    const activateLeft = (idx) => {
+      leftItems.forEach((it) => it.classList.remove("is-active"));
+      const el = leftItems.find((x) => Number(x.dataset.left) === idx);
+      if (el) el.classList.add("is-active");
+    };
+
+    const stepIO = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+
+          const idx = steps.indexOf(entry.target);
+          // mapping: step 0->left 1, step1->left 2, step2->left 3, step3(CTA)->left 0 (ou garder 3)
+          if (idx === 0) activateLeft(1);
+          else if (idx === 1) activateLeft(2);
+          else if (idx === 2) activateLeft(3);
+          else activateLeft(0);
+        });
+      },
+      { threshold: 0.55 }
+    );
+
+    steps.forEach((el) => stepIO.observe(el));
+
+    // ===== Level picker
+    const levelBtns = $$(".seg-btn");
+    const levelHelper = $("#levelHelper");
+    const metricLevel = $("#metricLevel");
+    const metricFocus = $("#metricFocus");
+    const metricResult = $("#metricResult");
+    const checklist = $("#heroChecklist");
+
+    const DATA = {
+      debutant: {
+        helper: "Bases solides + autonomie sur Logic Pro 11, avec une méthode simple et efficace.",
+        level: "Débutant",
+        focus: "Autonomie & workflow",
+        result: "Un projet propre et clair",
+        checklist: [
+          "Interface & workflow Logic Pro",
+          "Enregistrer / éditer proprement",
+          "Structurer un morceau",
+          "Exporter sans surprise",
+        ],
+      },
+      intermediaire: {
+        helper: "Structurer ton mix : équilibre, espace, automation. Tu gagnes en vitesse et en cohérence.",
+        level: "Intermédiaire",
+        focus: "Mix & méthode",
+        result: "Un mix plus stable",
+        checklist: [
+          "Gain staging & équilibre",
+          "Espace (pan / profondeur)",
+          "Automation utile",
+          "Organisation + références",
+        ],
+      },
+      avance: {
+        helper: "Cap pro : translation, décisions rapides, cohérence artistique et finition.",
+        level: "Avancé / Pro",
+        focus: "Finition & signature",
+        result: "Un rendu qui tient partout",
+        checklist: [
+          "Balance tonale & glue",
+          "Contrôle translation",
+          "Routine de validation",
+          "Pré-master propre",
+        ],
+      },
+    };
+
+    const renderLevel = (key) => {
+      const d = DATA[key];
+      if (!d) return;
+
+      if (levelHelper) levelHelper.textContent = d.helper;
+      if (metricLevel) metricLevel.textContent = d.level;
+      if (metricFocus) metricFocus.textContent = d.focus;
+      if (metricResult) metricResult.textContent = d.result;
+
+      if (checklist) {
+        checklist.innerHTML = "";
+        d.checklist.forEach((txt) => {
+          const li = document.createElement("li");
+          li.textContent = txt;
+          checklist.appendChild(li);
+        });
+      }
+    };
+
+    if (levelBtns.length) {
+      levelBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          levelBtns.forEach((b) => {
+            b.classList.remove("is-active");
+            b.setAttribute("aria-selected", "false");
+          });
+          btn.classList.add("is-active");
+          btn.setAttribute("aria-selected", "true");
+          renderLevel(btn.dataset.level);
+        });
+      });
+
+      // init from current active
+      const active = levelBtns.find((b) => b.classList.contains("is-active"));
+      renderLevel(active?.dataset.level || "debutant");
+    }
+  });
+})();
