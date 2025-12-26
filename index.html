@@ -39,7 +39,7 @@
         <div class="nav-menu" id="navMenu">
           <a href="#formations">Formations</a>
           <a href="#parcours">Parcours</a>
-          <a href="#methode">Méthode</a>
+          <a href="#methode-immersive">Méthode</a>
           <a href="#formats">Formats</a>
           <a href="#contact" class="nav-cta">Contact</a>
         </div>
@@ -61,8 +61,8 @@
           </h1>
 
           <p class="hero-subtitle" data-reveal>
-            Une pédagogie claire, orientée résultat. On apprend avec méthode, on pratique sur de vrais cas,
-            et on progresse à son rythme — débutant, intermédiaire ou avancé.
+            Une pédagogie claire, orientée résultat. Comprendre, pratiquer, finaliser.
+            Débutant, intermédiaire ou avancé.
           </p>
 
           <div class="hero-actions" data-reveal>
@@ -73,18 +73,12 @@
           <div class="level-picker" data-reveal>
             <div class="level-picker-title">Niveau</div>
             <div class="segmented" role="tablist" aria-label="Choisir un niveau">
-              <button class="seg-btn is-active" data-level="debutant" role="tab" aria-selected="true">
-                Débutant
-              </button>
-              <button class="seg-btn" data-level="intermediaire" role="tab" aria-selected="false">
-                Intermédiaire
-              </button>
-              <button class="seg-btn" data-level="avance" role="tab" aria-selected="false">
-                Avancé / Pro
-              </button>
+              <button class="seg-btn is-active" data-level="debutant" role="tab" aria-selected="true">Débutant</button>
+              <button class="seg-btn" data-level="intermediaire" role="tab" aria-selected="false">Intermédiaire</button>
+              <button class="seg-btn" data-level="avance" role="tab" aria-selected="false">Avancé / Pro</button>
             </div>
             <p class="level-helper" id="levelHelper">
-              On pose des bases solides et on rend autonome sur Logic Pro 11, avec une méthode simple et efficace.
+              Bases solides, autonomie, workflow propre sur Logic Pro 11.
             </p>
           </div>
 
@@ -100,9 +94,7 @@
             <div class="hero-card-top">
               <div class="hero-card-kicker">Objectif</div>
               <div class="hero-card-title">Passer un cap concret</div>
-              <div class="hero-card-sub">
-                Comprendre, pratiquer, finaliser — sans jargon inutile.
-              </div>
+              <div class="hero-card-sub">Comprendre, pratiquer, finaliser — sans bruit.</div>
             </div>
 
             <div class="hero-card-body">
@@ -116,7 +108,7 @@
               </div>
               <div class="metric">
                 <div class="metric-label">Résultat</div>
-                <div class="metric-value" id="metricResult">Un projet propre et clair</div>
+                <div class="metric-value" id="metricResult">Un projet propre</div>
               </div>
 
               <div class="divider"></div>
@@ -144,43 +136,56 @@
       </svg>
     </section>
 
-    <!-- STICKY / BLUR STORY (entre Hero et Formations) -->
-    <section class="sticky-story" id="methode-immersive">
-     <div class="sticky-story__media"
-  style="--bg-photo: url('assets/bg-pro.webp'); --bg-photo-opacity:.55;"
-  aria-hidden="true"></div>
+    <!-- STICKY / BLUR STORY -->
+    <section class="sticky-story" id="methode-immersive" aria-label="Méthode">
+      <div class="sticky-story__media"
+           style="--bg-photo: url('assets/bg-pro.webp'); --bg-photo-opacity:.64;"
+           aria-hidden="true"></div>
 
+      <!-- Texte fixé sur l'image (remplacé au scroll) -->
+      <div class="sticky-hero-copy" aria-live="polite">
+        <div class="sticky-swap" id="stickySwap">
+          <div class="sticky-panel is-current" id="stickyCurrent">
+            <div class="sticky-kicker">Méthode de formation</div>
+            <h2 class="sticky-title">Comprendre. Pratiquer. Finaliser.</h2>
+            <p class="sticky-sub">
+              Une progression claire : workflow, écoute, décisions.
+              Un résultat solide, réutilisable, mesurable.
+            </p>
+            <div class="sticky-pills">
+              <span class="pill">Logic Pro 11</span>
+              <span class="pill">Mixage</span>
+              <span class="pill">Prise de son</span>
+              <span class="pill">Réalisation</span>
+            </div>
+          </div>
 
+          <div class="sticky-panel is-next" id="stickyNext" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <!-- “Bulles” qui apparaissent pendant le flou -->
       <div class="container sticky-story__content">
         <div class="sticky-story__spacer" aria-hidden="true"></div>
 
         <div class="story-step" data-step>
-          <h2>Une méthode claire, pas du bruit.</h2>
-          <p>
-            Chaque notion est expliquée simplement, puis appliquée tout de suite.
-            L’objectif : comprendre ce que l’on fait — et pourquoi on le fait.
-          </p>
+          <h3>Clarté</h3>
+          <p>Comprendre ce qui compte : gain, espace, priorités, contrôle.</p>
         </div>
 
         <div class="story-step" data-step>
-          <h3>On pratique sur du concret.</h3>
-          <p>
-            Sessions structurées, exercices utiles, retours précis.
-            Un workflow propre, réutilisable, efficace.
-          </p>
+          <h3>Pratique</h3>
+          <p>Exercices utiles, retours précis, méthode réutilisable.</p>
         </div>
 
         <div class="story-step" data-step>
-          <h3>On finit. On valide. On progresse.</h3>
-          <p>
-            Templates, checklists, routines de contrôle : une progression mesurable,
-            du premier projet au niveau avancé.
-          </p>
+          <h3>Finition</h3>
+          <p>Translation, cohérence, routine de validation : rendu stable partout.</p>
         </div>
 
         <div class="story-step story-cta" data-step>
           <h3>Choisir un parcours</h3>
-          <p>Débutant, intermédiaire, avancé : un point de départ clair, des objectifs concrets.</p>
+          <p>Débutant, intermédiaire, avancé : objectifs concrets, progression structurée.</p>
           <div class="story-cta-actions">
             <a class="btn btn-primary" href="#parcours">Parcours</a>
             <a class="btn btn-ghost" href="#formations">Formations</a>
@@ -197,7 +202,7 @@
         <div class="section-head" data-reveal>
           <h2 class="section-title">Les formations</h2>
           <p class="section-subtitle">
-            Des modules clairs, structurés, orientés résultat. Programmes détaillés, objectifs et livrables selon le niveau.
+            Modules clairs, structurés, orientés résultat. Programmes détaillés et objectifs par niveau.
           </p>
         </div>
 
@@ -221,7 +226,7 @@
           <article class="card" data-reveal>
             <div class="card-top">
               <h3>Mixage</h3>
-              <p>Équilibre, profondeur, translation : un mix qui tient partout.</p>
+              <p>Équilibre, profondeur, translation : un mix qui tient.</p>
             </div>
             <ul class="card-list">
               <li>Niveaux : Intermédiaire → Pro</li>
@@ -229,7 +234,7 @@
               <li>Format : individuel / groupe</li>
             </ul>
             <div class="card-actions">
-              <a class="btn btn-ghost btn-small" href="#objectifs">Objectifs</a>
+              <a class="btn btn-ghost btn-small" href="#methode-immersive">Méthode</a>
               <a class="btn btn-primary btn-small" href="#contact">Infos</a>
             </div>
           </article>
@@ -241,11 +246,11 @@
             </div>
             <ul class="card-list">
               <li>Niveaux : Débutant → Avancé</li>
-              <li>Objectif : captation propre</li>
+              <li>Objectif : captation</li>
               <li>Format : individuel / groupe</li>
             </ul>
             <div class="card-actions">
-              <a class="btn btn-ghost btn-small" href="#methode">Méthode</a>
+              <a class="btn btn-ghost btn-small" href="#parcours">Parcours</a>
               <a class="btn btn-primary btn-small" href="#contact">Infos</a>
             </div>
           </article>
@@ -257,7 +262,7 @@
             </div>
             <ul class="card-list">
               <li>Niveaux : Intermédiaire → Pro</li>
-              <li>Objectif : identité sonore</li>
+              <li>Objectif : identité</li>
               <li>Format : individuel / groupe</li>
             </ul>
             <div class="card-actions">
@@ -275,7 +280,7 @@
         <div class="section-head" data-reveal>
           <h2 class="section-title">Parcours par niveau</h2>
           <p class="section-subtitle">
-            Un point de départ clair. Une progression structurée. Des objectifs concrets.
+            Point de départ clair. Progression structurée. Objectifs concrets.
           </p>
         </div>
 
@@ -315,16 +320,16 @@
             <div class="card-top">
               <div class="tag">Intermédiaire</div>
               <h3>Mix & production structurée</h3>
-              <p>Une méthode claire pour décider plus vite, avec un rendu cohérent.</p>
+              <p>Méthode claire pour décider plus vite, rendu plus cohérent.</p>
             </div>
             <div class="two-col">
               <div>
                 <div class="mini-title">Compétences</div>
                 <ul class="card-list">
-                  <li>Gain staging & équilibre</li>
-                  <li>Espace (pan / depth)</li>
+                  <li>Équilibre & gain staging</li>
+                  <li>Espace (pan / profondeur)</li>
                   <li>Automation</li>
-                  <li>Organisation de session</li>
+                  <li>Organisation session</li>
                 </ul>
               </div>
               <div>
@@ -338,7 +343,7 @@
             </div>
             <div class="card-actions">
               <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-              <a class="btn btn-ghost btn-small" href="#methode">Méthode</a>
+              <a class="btn btn-ghost btn-small" href="#methode-immersive">Méthode</a>
             </div>
           </article>
 
@@ -346,7 +351,7 @@
             <div class="card-top">
               <div class="tag">Avancé / Pro</div>
               <h3>Finition & signature</h3>
-              <p>Translation, cohérence, direction artistique : cap “pro”.</p>
+              <p>Translation, cohérence, direction : cap “pro”.</p>
             </div>
             <div class="two-col">
               <div>
@@ -369,95 +374,9 @@
             </div>
             <div class="card-actions">
               <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-              <a class="btn btn-ghost btn-small" href="#objectifs">Objectifs</a>
+              <a class="btn btn-ghost btn-small" href="#methode-immersive">Méthode</a>
             </div>
           </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- OBJECTIFS AVANCES -->
-    <section class="section section-alt section-photo" id="objectifs"
-      style="--bg-photo: url('assets/bg-pro.webp'); --bg-photo-opacity:.32;">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <h2 class="section-title">Objectifs concrets (niveau avancé)</h2>
-          <p class="section-subtitle">
-            Résultat final, cohérence, translation, décisions efficaces.
-          </p>
-        </div>
-
-        <div class="grid cards-4">
-          <div class="card mini-card" data-reveal>
-            <h3>Translation</h3>
-            <p>Un mix qui tient partout : enceintes, écouteurs, voiture.</p>
-          </div>
-          <div class="card mini-card" data-reveal>
-            <h3>Signature</h3>
-            <p>Couleurs, choix, cohérence artistique, direction.</p>
-          </div>
-          <div class="card mini-card" data-reveal>
-            <h3>Workflow</h3>
-            <p>Organisation, priorités, méthode de contrôle.</p>
-          </div>
-          <div class="card mini-card" data-reveal>
-            <h3>Finition</h3>
-            <p>Propreté, équilibre, glue : rendu solide.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- METHODE -->
-    <section class="section" id="methode">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <h2 class="section-title">Une méthode structurée</h2>
-          <p class="section-subtitle">
-            Comprendre, pratiquer, valider. Progression claire et réutilisable.
-          </p>
-        </div>
-
-        <div class="timeline">
-          <div class="step" data-reveal>
-            <div class="step-num">1</div>
-            <div class="step-body">
-              <h3>Objectif</h3>
-              <p>Niveau, style, références, blocage : plan concret.</p>
-            </div>
-          </div>
-
-          <div class="step" data-reveal>
-            <div class="step-num">2</div>
-            <div class="step-body">
-              <h3>Progression</h3>
-              <p>Étapes simples, exercices utiles, décisions claires.</p>
-            </div>
-          </div>
-
-          <div class="step" data-reveal>
-            <div class="step-num">3</div>
-            <div class="step-body">
-              <h3>Pratique</h3>
-              <p>Travail sur projets : production, mix, prise de son.</p>
-            </div>
-          </div>
-
-          <div class="step" data-reveal>
-            <div class="step-num">4</div>
-            <div class="step-body">
-              <h3>Acquis</h3>
-              <p>Templates, checklists, routines : méthode durable.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="cta-band" data-reveal>
-          <div>
-            <h3>Orientation rapide</h3>
-            <p>Niveau + objectif = parcours conseillé. Réponse simple et claire.</p>
-          </div>
-          <a class="btn btn-primary" href="#contact">Contact</a>
         </div>
       </div>
     </section>
@@ -519,9 +438,7 @@
         <div class="contact-card" data-reveal>
           <div class="contact-copy">
             <h2>Contact</h2>
-            <p>
-              Niveau, objectif, blocage : message court, orientation claire.
-            </p>
+            <p>Niveau, objectif, blocage : message court, orientation claire.</p>
 
             <div class="contact-rows">
               <div class="contact-row">
@@ -534,7 +451,7 @@
               </div>
               <div class="contact-row">
                 <div class="contact-label">Message</div>
-                <div class="contact-value">“Je suis niveau …, je veux …, je bloque sur …”</div>
+                <div class="contact-value">“Niveau … / objectif … / blocage …”</div>
               </div>
             </div>
 
@@ -550,9 +467,7 @@
           <div class="contact-side">
             <div class="quote">
               <div class="quote-title">Promesse</div>
-              <p>
-                Une méthode réutilisable, des retours précis, un résultat concret.
-              </p>
+              <p>Une méthode réutilisable, des retours précis, un résultat concret.</p>
             </div>
 
             <div class="mini-faq">
@@ -566,7 +481,7 @@
               </div>
               <div class="mini-faq-item">
                 <div class="mini-faq-q">Logic Pro 11 ?</div>
-                <div class="mini-faq-a">Cœur de la formation, principes transférables.</div>
+                <div class="mini-faq-a">Cœur du parcours, principes transférables.</div>
               </div>
             </div>
           </div>
@@ -581,7 +496,7 @@
             <div class="footer-links">
               <a href="#formations">Formations</a>
               <a href="#parcours">Parcours</a>
-              <a href="#methode">Méthode</a>
+              <a href="#methode-immersive">Méthode</a>
               <a href="#formats">Formats</a>
               <a href="#contact">Contact</a>
             </div>
