@@ -564,6 +564,21 @@ img, svg{ max-width:100%; height:auto; display:block; }
   z-index: 6;
   pointer-events: none;
 }
+/* Sticky-left invisible tant que la section sticky n'est pas à l'écran */
+.sticky-left{
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+}
+
+.sticky-story.is-inview .sticky-left{
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: opacity .25s ease, transform .25s ease, visibility 0s;
+}
+
 .sticky-left__stack{ position: relative; }
 
 .sticky-left__item{
