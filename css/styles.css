@@ -747,3 +747,14 @@ img, svg{ max-width:100%; height:auto; display:block; }
 .sticky-left{ pointer-events: auto !important; }
 .sticky-panel{ pointer-events: auto !important; }
 .sticky-nav, .sticky-nav__item{ pointer-events: auto !important; }
+/* --- FIX: progress overlays must NEVER capture clicks --- */
+.sticky-nav__progress,
+.method-tabs__progress{
+  pointer-events: none !important;
+}
+
+/* au cas où le progress est au-dessus visuellement */
+.sticky-nav{ position: relative; }
+.sticky-nav__item{ position: relative; z-index: 2; }
+.sticky-nav__progress{ position: absolute; z-index: 1; }
+
