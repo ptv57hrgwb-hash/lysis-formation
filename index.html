@@ -21,7 +21,7 @@
   <a class="skip-link" href="#main">Aller au contenu</a>
   <div class="top-glow" aria-hidden="true"></div>
 
-  <header class="site-header" role="banner">
+  <header class="site-header" role="banner" id="siteHeader">
     <div class="container header-inner">
       <a class="brand" href="#top" aria-label="Retour en haut">
         <span class="brand-mark" aria-hidden="true">LY</span>
@@ -199,53 +199,15 @@
             </div>
           </article>
         </div>
-
-        <div class="section-head" style="margin-top:26px" data-reveal>
-          <h3 class="section-title" style="font-size:clamp(1.25rem,2.1vw,1.7rem)">Ce que vous gagnez</h3>
-          <p class="section-subtitle">
-            Une méthode stable, des repères, et un processus de validation clair.
-          </p>
-        </div>
-
-        <div class="grid cards-4">
-          <article class="card" data-reveal>
-            <div class="card-top">
-              <span class="tag">Workflow</span>
-              <h3>Session structurée</h3>
-              <p>Un cadre propre : nommage, routing, repères.</p>
-            </div>
-          </article>
-          <article class="card" data-reveal>
-            <div class="card-top">
-              <span class="tag">Écoute</span>
-              <h3>Priorités</h3>
-              <p>Savoir quoi écouter et quoi corriger en premier.</p>
-            </div>
-          </article>
-          <article class="card" data-reveal>
-            <div class="card-top">
-              <span class="tag">Décisions</span>
-              <h3>Moins d’hésitation</h3>
-              <p>Des choix cohérents et reproductibles.</p>
-            </div>
-          </article>
-          <article class="card" data-reveal>
-            <div class="card-top">
-              <span class="tag">Validation</span>
-              <h3>Rendu fiable</h3>
-              <p>Routine de contrôle + exports propres.</p>
-            </div>
-          </article>
-        </div>
       </div>
     </section>
 
-    <!-- MÉTHODE : Desktop “super” / Mobile “light + tabs” -->
+    <!-- MÉTHODE -->
     <section class="sticky-story bg-pro" id="methode-immersive" aria-label="Méthode : comprendre, pratiquer, finaliser">
       <div class="sticky-story__media" aria-hidden="true"></div>
 
-      <!-- MOBILE: mini-tabs (visible uniquement sur mobile) -->
-      <div class="method-mobile" aria-label="Navigation mobile de la méthode">
+      <!-- MOBILE: mini-tabs -->
+      <div class="method-mobile" aria-label="Navigation mobile de la méthode" id="methodMobile">
         <div class="method-mobile__head">
           <span class="sticky-kicker">Méthode</span>
           <h2 class="method-mobile__title">Comprendre → Pratiquer → Finaliser</h2>
@@ -255,20 +217,14 @@
         </div>
 
         <div class="method-tabs" role="tablist" aria-label="Étapes">
-          <button class="method-tab is-active" type="button" data-step="0" data-target="#step-comprendre" role="tab" aria-selected="true">
-            Comprendre
-          </button>
-          <button class="method-tab" type="button" data-step="1" data-target="#step-pratiquer" role="tab" aria-selected="false">
-            Pratiquer
-          </button>
-          <button class="method-tab" type="button" data-step="2" data-target="#step-finaliser" role="tab" aria-selected="false">
-            Finaliser
-          </button>
+          <button class="method-tab is-active" type="button" data-step="0" data-target="#step-comprendre" role="tab" aria-selected="true">Comprendre</button>
+          <button class="method-tab" type="button" data-step="1" data-target="#step-pratiquer" role="tab" aria-selected="false">Pratiquer</button>
+          <button class="method-tab" type="button" data-step="2" data-target="#step-finaliser" role="tab" aria-selected="false">Finaliser</button>
         </div>
         <div class="method-tabs__progress" aria-hidden="true"><span></span></div>
       </div>
 
-      <!-- DESKTOP: panneau gauche (visible uniquement desktop) -->
+      <!-- DESKTOP: panneau gauche -->
       <aside class="sticky-left" aria-hidden="false">
         <div class="sticky-panel">
           <span class="sticky-kicker">Méthode</span>
@@ -505,7 +461,7 @@
               <div class="contact-row">
                 <div class="contact-label">Email</div>
                 <div class="contact-value">
-                  <a href="mailto:lysis.asso.gmail.com">lysis.asso.gmail.com</a>
+                  <a href="mailto:lysis-asso@gmail.com">lysis-asso@gmail.com</a>
                 </div>
               </div>
 
@@ -516,7 +472,7 @@
             </div>
 
             <div class="contact-actions">
-              <a class="btn btn-primary" href="mailto:lysis.asso.gmail.com?subject=Demande%20formation%20Lysis">Envoyer un email</a>
+              <a class="btn btn-primary" href="mailto:lysis-asso@gmail.com?subject=Demande%20formation%20Lysis">Envoyer un email</a>
               <a class="btn btn-ghost" href="#top">Revenir en haut</a>
             </div>
           </div>
@@ -559,7 +515,7 @@
           <div class="footer-bottom">
             <span>© <span id="year"></span> Lysis</span>
             <span class="dot">•</span>
-            <span>Contact : <a href="mailto:lysis.asso.gmail.com">lysis.asso.gmail.com</a></span>
+            <span>Contact : <a href="mailto:lysis-asso@gmail.com">lysis-asso@gmail.com</a></span>
           </div>
         </footer>
       </div>
