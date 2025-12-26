@@ -1,4 +1,4 @@
-/* Lysis Formation — script.js (Safari Mac: clicks 1/2/3 => step 1/2/3) */
+/* Lysis Formation — script.js (Safari Mac: click 1/2/3 shows steps immediately) */
 (() => {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -71,24 +71,14 @@
       helper: "Décisions plus rapides, session plus propre, rendu plus cohérent.",
       focus: "Équilibre & espace",
       result: "Un mix lisible et stable",
-      checklist: [
-        "Gain staging & équilibre",
-        "Pan / profondeur",
-        "Automation utile",
-        "Organisation de session",
-      ],
+      checklist: ["Gain staging & équilibre", "Pan / profondeur", "Automation utile", "Organisation de session"],
     },
     avance: {
       label: "Avancé / Pro",
       helper: "Finition : translation, cohérence, routine de validation et exports propres.",
       focus: "Finition & validation",
       result: "Un rendu fiable",
-      checklist: [
-        "Balance tonale & références",
-        "Contrôle et validation",
-        "Exports (stems / versions)",
-        "Routine de fin",
-      ],
+      checklist: ["Balance tonale & références", "Contrôle et validation", "Exports (stems / versions)", "Routine de fin"],
     },
   };
 
@@ -113,7 +103,7 @@
   levelBtns.forEach((btn) => btn.addEventListener("click", () => setLevel(btn.dataset.level)));
   setLevel("debutant");
 
-  // ===== Méthode : pilotage steps (Desktop + Mobile)
+  // ===== Méthode (sticky) — clicks + scroll sync
   const story = $(".sticky-story");
   const media = $(".sticky-story__media");
   const steps = $$("[data-step]", story || document);
@@ -122,10 +112,12 @@
   const methodMobile = $("#methodMobile");
   const mmMobile = window.matchMedia("(max-width: 760px)");
 
-  const navItems = $$(".sticky-nav__item", story || document);   // Desktop buttons 1/2/3
+  // Desktop buttons 1/2/3 (new layout)
+  const navItems = $$(".sticky-nav__item", story || document);
   const stickySub = $("#stickySub");
 
-  const mobileTabs = $$(".method-tab", story || document);       // Mobile tabs
+  // Mobile tabs
+  const mobileTabs = $$(".method-tab", story || document);
   const mobileSub = $("#methodMobileSub");
 
   const SUBS = [
@@ -133,6 +125,9 @@
     "Automatismes : stabilité du workflow, cohérence du rendu, décisions plus rapides.",
     "Validation et exports : translation, checklist finale, livrables prêts.",
   ];
+
+  // If your HTML is still the older version, you can also add buttons with data-step-jump="0|1|2"
+  const compatJumpBtns = $$("[data-step-jump]", story || document);
 
   const setProgress = (idx) => {
     const pct = idx <= 0 ? 0 : idx === 1 ? 50 : 100;
@@ -166,7 +161,7 @@
 
   const getScrollOffset = () => {
     const h = header ? Math.round(header.getBoundingClientRect().height) : 0;
-    const m = (mmMobile.matches && methodMobile) ? Math.round(methodMobile.getBoundingClientRect().height) : 0;
+    const m = mmMobile.matches && methodMobile ? Math.round(methodMobile.getBoundingClientRect().height) : 0;
     return h + m + 14;
   };
 
@@ -188,24 +183,40 @@
     }
   };
 
-  // IMPORTANT: Desktop 1/2/3 => index direct (Safari Mac stable)
+  // ===== IMPORTANT FIX:
+  // After clicking 1/2/3, prevent scroll-sync from overriding the chosen step until scroll finishes.
+  let lockUntil = 0;
+  const lockFor = (ms = 900) => {
+    lockUntil = (window.performance?.now?.() || Date.now()) + ms;
+  };
+  const isLocked = () => {
+    const now = window.performance?.now?.() || Date.now();
+    return now < lockUntil;
+  };
+
   const goToStep = (idx) => {
     idx = Math.max(0, Math.min(steps.length - 1, idx));
     currentIdx = idx;
 
-    // force UI + panel visible first
+    // Show immediately
     setPanelsVisibility(idx);
     activateStepUI(idx);
 
-    // Safari: re-scroll after a tick to ensure layout is updated
+    // Ensure left is visible instantly (no need to wait for next scroll tick)
+    if (story) story.classList.add("is-inview");
+
+    // Lock sync for a moment so user sees the change right away
+    lockFor(950);
+
+    // Scroll with offset (Safari friendly) + one extra nudge
     requestAnimationFrame(() => {
       scrollToEl(steps[idx]);
       setTimeout(() => scrollToEl(steps[idx]), 60);
     });
   };
 
-  // Desktop buttons 1/2/3 (use data-left as index)
-  const bindDesktopNav = () => {
+  // Desktop nav 1/2/3: map index directly via data-left
+  if (navItems.length) {
     navItems.forEach((btn) => {
       const handler = (e) => {
         e.preventDefault();
@@ -214,15 +225,13 @@
         if (!Number.isFinite(idx)) return;
         goToStep(idx);
       };
-
       btn.addEventListener("click", handler);
-      // Safari sometimes feels better with pointerup as well
       btn.addEventListener("pointerup", handler);
     });
-  };
+  }
 
-  // Mobile tabs (use data-step as index)
-  const bindMobileTabs = () => {
+  // Mobile tabs: map index via data-step
+  if (mobileTabs.length) {
     mobileTabs.forEach((btn) => {
       const handler = (e) => {
         e.preventDefault();
@@ -231,23 +240,31 @@
         if (!Number.isFinite(idx)) return;
         goToStep(idx);
       };
-
       btn.addEventListener("click", handler);
       btn.addEventListener("pointerup", handler);
     });
-  };
+  }
 
-  bindDesktopNav();
-  bindMobileTabs();
+  // Compatibility: any element with data-step-jump="0|1|2"
+  if (compatJumpBtns.length) {
+    compatJumpBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const idx = Number(btn.dataset.stepJump);
+        if (!Number.isFinite(idx)) return;
+        goToStep(idx);
+      });
+    });
+  }
 
   if (story && steps.length) {
     let raf = 0;
 
-    // In/out view logic (works well on Safari Mac too)
     const computeInView = () => {
       const rect = story.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
+      // Enters slightly later, exits earlier (nice on Safari)
       const enterLine = vh * 0.22;
       const leaveLine = vh * 0.80;
 
@@ -281,6 +298,9 @@
         const inview = computeInView();
         if (!inview) return;
 
+        // While locked (after click), do NOT override selected step
+        if (isLocked()) return;
+
         const idx = pickActiveStep();
         if (idx !== currentIdx) {
           currentIdx = idx;
@@ -288,7 +308,7 @@
           activateStepUI(idx);
         }
 
-        // Desktop-only blur dynamics
+        // Blur dynamics (desktop only)
         if (media && !mmMobile.matches) {
           const rect = story.getBoundingClientRect();
           const vh = window.innerHeight || 1;
