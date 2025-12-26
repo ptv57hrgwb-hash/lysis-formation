@@ -1,4 +1,4 @@
-/* Lysis Formation — script.js (Safari iOS fixes + reliable step buttons) */
+/* Lysis Formation — script.js (Safari Mac: clicks 1/2/3 => step 1/2/3) */
 (() => {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -113,7 +113,7 @@
   levelBtns.forEach((btn) => btn.addEventListener("click", () => setLevel(btn.dataset.level)));
   setLevel("debutant");
 
-  // ===== Method section logic
+  // ===== Méthode : pilotage steps (Desktop + Mobile)
   const story = $(".sticky-story");
   const media = $(".sticky-story__media");
   const steps = $$("[data-step]", story || document);
@@ -122,10 +122,10 @@
   const methodMobile = $("#methodMobile");
   const mmMobile = window.matchMedia("(max-width: 760px)");
 
-  const navItems = $$(".sticky-nav__item", story || document);
+  const navItems = $$(".sticky-nav__item", story || document);   // Desktop buttons 1/2/3
   const stickySub = $("#stickySub");
 
-  const mobileTabs = $$(".method-tab", story || document);
+  const mobileTabs = $$(".method-tab", story || document);       // Mobile tabs
   const mobileSub = $("#methodMobileSub");
 
   const SUBS = [
@@ -137,8 +137,8 @@
   const setProgress = (idx) => {
     const pct = idx <= 0 ? 0 : idx === 1 ? 50 : 100;
     if (story) {
-      story.style.setProperty("--progress", `${pct}%`);   // desktop
-      story.style.setProperty("--mprogress", `${pct}%`);  // mobile
+      story.style.setProperty("--progress", `${pct}%`);
+      story.style.setProperty("--mprogress", `${pct}%`);
     }
   };
 
@@ -164,26 +164,17 @@
     activateMobileTabs(idx);
   };
 
-  // --- Safari-safe scroll with offset (header + mobile tabs)
   const getScrollOffset = () => {
     const h = header ? Math.round(header.getBoundingClientRect().height) : 0;
-    const m = (mmMobile.matches && methodMobile)
-      ? Math.round(methodMobile.getBoundingClientRect().height)
-      : 0;
-    return h + m + 14; // breathing space
+    const m = (mmMobile.matches && methodMobile) ? Math.round(methodMobile.getBoundingClientRect().height) : 0;
+    return h + m + 14;
   };
 
-  const scrollToTarget = (targetEl) => {
-    if (!targetEl) return;
-    const y = window.scrollY + targetEl.getBoundingClientRect().top - getScrollOffset();
-    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
-  };
-
-  const indexFromTarget = (targetEl) => {
-    if (!targetEl) return 0;
-    const s = targetEl.getAttribute("data-step");
-    const idx = s != null ? Number(s) : steps.indexOf(targetEl);
-    return Number.isFinite(idx) && idx >= 0 ? idx : 0;
+  const scrollToEl = (el) => {
+    if (!el) return;
+    const y = window.scrollY + el.getBoundingClientRect().top - getScrollOffset();
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: Math.max(0, y), behavior: smooth ? "smooth" : "auto" });
   };
 
   let currentIdx = 0;
@@ -197,60 +188,76 @@
     }
   };
 
-  // Force UI then scroll (buttons reliable)
+  // IMPORTANT: Desktop 1/2/3 => index direct (Safari Mac stable)
   const goToStep = (idx) => {
     idx = Math.max(0, Math.min(steps.length - 1, idx));
     currentIdx = idx;
 
+    // force UI + panel visible first
     setPanelsVisibility(idx);
     activateStepUI(idx);
 
-    // Defer a tick so Safari applies classes before scrolling
-    requestAnimationFrame(() => scrollToTarget(steps[idx]));
-  };
-
-  // Click bindings (stop default + propagation)
-  const bindButtons = (btns) => {
-    btns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const targetSel = btn.dataset.target;
-        const target = targetSel ? $(targetSel) : null;
-        if (!target) return;
-
-        const idx = indexFromTarget(target);
-        goToStep(idx);
-      });
+    // Safari: re-scroll after a tick to ensure layout is updated
+    requestAnimationFrame(() => {
+      scrollToEl(steps[idx]);
+      setTimeout(() => scrollToEl(steps[idx]), 60);
     });
   };
-  bindButtons(navItems);
-  bindButtons(mobileTabs);
+
+  // Desktop buttons 1/2/3 (use data-left as index)
+  const bindDesktopNav = () => {
+    navItems.forEach((btn) => {
+      const handler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const idx = Number(btn.dataset.left);
+        if (!Number.isFinite(idx)) return;
+        goToStep(idx);
+      };
+
+      btn.addEventListener("click", handler);
+      // Safari sometimes feels better with pointerup as well
+      btn.addEventListener("pointerup", handler);
+    });
+  };
+
+  // Mobile tabs (use data-step as index)
+  const bindMobileTabs = () => {
+    mobileTabs.forEach((btn) => {
+      const handler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const idx = Number(btn.dataset.step);
+        if (!Number.isFinite(idx)) return;
+        goToStep(idx);
+      };
+
+      btn.addEventListener("click", handler);
+      btn.addEventListener("pointerup", handler);
+    });
+  };
+
+  bindDesktopNav();
+  bindMobileTabs();
 
   if (story && steps.length) {
     let raf = 0;
 
-    // Safari iOS: compute in-view via scroll (more stable than IO)
+    // In/out view logic (works well on Safari Mac too)
     const computeInView = () => {
       const rect = story.getBoundingClientRect();
       const vh = window.innerHeight || 1;
 
-      // enters slightly later
       const enterLine = vh * 0.22;
-
-      // exits earlier (was too late on iOS)
       const leaveLine = vh * 0.80;
 
       const inview = rect.top <= enterLine && rect.bottom >= leaveLine;
-
       story.classList.toggle("is-inview", inview);
       return inview;
     };
 
     const pickActiveStep = () => {
       const mid = (window.innerHeight || 1) * 0.52;
-
       let best = 0;
       let bestDist = Infinity;
 
@@ -304,10 +311,6 @@
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
-
-    // iOS Safari: handle orientation change quirks
-    window.addEventListener("orientationchange", () => setTimeout(onScroll, 50));
-
     onScroll();
   }
 })();
