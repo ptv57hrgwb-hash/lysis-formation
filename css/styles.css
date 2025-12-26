@@ -152,6 +152,12 @@ h1,h2,h3{ letter-spacing:-.02em; }
   filter: saturate(1.10) contrast(1.07) brightness(1.05);
   transform: scale(1.03);
 }
+/* Background presets */
+.bg-hero{ --bg-photo: url("../assets/bg-hero.jpg"); }
+.bg-pro{ --bg-photo: url("../assets/bg-pro.jpg"); }
+.bg-contact{ --bg-photo: url("../assets/bg-contact.jpg"); 
+}
+
 .section-photo::after{
   content:""; position:absolute; inset:0;
   background:
