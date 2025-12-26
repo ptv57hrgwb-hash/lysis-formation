@@ -27,7 +27,6 @@ body{
   color: var(--text);
   overflow-x:hidden;
 }
-
 a{ color:inherit; text-decoration:none; }
 p{ line-height:1.7; }
 h1,h2,h3{ letter-spacing:-.02em; }
@@ -496,12 +495,15 @@ img, svg{ max-width:100%; height:auto; display:block; }
   filter: blur(0) !important;
 }
 
-/* ===== Sticky story ===== */
+/* ===== Sticky story (safe iOS/Safari + no side reflections + lighter bubbles) ===== */
 .sticky-story{
   position: relative;
   padding: 0;
   min-height: 200vh;
+
+  /* iOS/Safari safety */
   overflow: hidden;
+
   z-index: 2;
   background:#000;
 }
@@ -527,7 +529,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
   will-change: filter, transform;
 }
 
-/* overlays */
+/* Readability overlay */
 .sticky-story::after{
   content:"";
   position:absolute;
@@ -539,6 +541,8 @@ img, svg{ max-width:100%; height:auto; display:block; }
     radial-gradient(620px 460px at 60% 44%, rgba(122,167,255,.08), transparent 66%),
     linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.82));
 }
+
+/* Edge mask (removes bright side reflections) */
 .sticky-story::before{
   content:"";
   position:absolute;
@@ -556,6 +560,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
     );
 }
 
+/* Left overlay */
 .sticky-left{
   position: fixed;
   left: max(20px, calc((100vw - var(--max)) / 2));
@@ -563,15 +568,13 @@ img, svg{ max-width:100%; height:auto; display:block; }
   width: min(520px, calc(100vw - 40px));
   z-index: 6;
   pointer-events: none;
-}
-/* Sticky-left invisible tant que la section sticky n'est pas à l'écran */
-.sticky-left{
+
+  /* Hidden by default: only visible while sticky section is in view */
   opacity: 0;
   visibility: hidden;
   transform: translateY(12px);
   transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
 }
-
 .sticky-story.is-inview .sticky-left{
   opacity: 1;
   visibility: visible;
@@ -621,6 +624,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
 .sticky-story__content{ position:relative; z-index: 7; padding: 84px 0; }
 .sticky-story__spacer{ height: 38vh; }
 
+/* Lighter bubbles */
 .story-step{
   max-width: 70ch;
   margin: 0 auto 18px;
@@ -650,6 +654,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
 }
 .story-cta-actions{ margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
 
+/* Responsive */
 @media (max-width: 980px){
   .hero-grid{ grid-template-columns: 1fr; }
   .cards-4{ grid-template-columns: repeat(2, 1fr); }
@@ -693,6 +698,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
   .sticky-left__item{ position: relative; }
 }
 
+/* Motion safety */
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
   [data-reveal], .story-step, .seg-btn, .btn, .nav-menu a{
