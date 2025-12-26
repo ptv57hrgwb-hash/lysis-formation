@@ -14,7 +14,6 @@
 
   --max: 1160px;
 
-  /* Sticky layout */
   --sticky-left-w: 520px;
   --sticky-gap: 34px;
 }
@@ -47,14 +46,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
   z-index:999;
 }
 .skip-link:focus{ left:14px; top:14px; }
-.sr-only{
-  position:absolute!important;
-  width:1px;height:1px;
-  padding:0;margin:-1px;
-  overflow:hidden;
-  clip:rect(0,0,0,0);
-  white-space:nowrap;border:0;
-}
 
 /* Ambient glow */
 .top-glow{
@@ -488,7 +479,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
   filter: blur(0) !important;
 }
 
-/* ===== Sticky story (REFONTE claire : sommaire + chapitres) ===== */
+/* ===== Sticky story (sommaire + chapitres) ===== */
 .sticky-story{
   position: relative;
   padding: 0;
@@ -519,7 +510,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
   will-change: filter, transform;
 }
 
-/* Readability overlay */
 .sticky-story::after{
   content:"";
   position:absolute;
@@ -531,8 +521,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
     radial-gradient(620px 460px at 60% 44%, rgba(122,167,255,.08), transparent 66%),
     linear-gradient(180deg, rgba(0,0,0,.64), rgba(0,0,0,.86));
 }
-
-/* Edge mask */
 .sticky-story::before{
   content:"";
   position:absolute;
@@ -550,7 +538,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
     );
 }
 
-/* Left panel appears only when story is in view */
 .sticky-left{
   position: fixed;
   left: max(20px, calc((100vw - var(--max)) / 2));
@@ -601,7 +588,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
   font-weight:750;
 }
 
-/* Step nav */
 .sticky-nav{
   display:grid;
   gap:10px;
@@ -647,7 +633,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
   font-weight:850;
   font-size:.92rem;
 }
-
 .sticky-nav__progress{
   position:absolute;
   left: 17px;
@@ -670,7 +655,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
   transition: height .25s ease;
 }
 
-/* Right content */
 .sticky-story__content{
   position:relative;
   z-index: 7;
@@ -679,7 +663,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
 }
 .sticky-story__spacer{ height: 34vh; }
 
-/* Chapter panels */
 .story-panel{
   max-width: 78ch;
   margin: 0 auto 18px;
@@ -700,7 +683,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
   transform: translateY(0);
   filter: blur(0);
 }
-
 .story-panel__head{ margin-bottom: 12px; }
 .story-badge{
   display:inline-flex;
@@ -723,7 +705,6 @@ img, svg{ max-width:100%; height:auto; display:block; }
   font-weight: 800;
   line-height: 1.6;
 }
-
 .story-panel__grid{
   margin-top: 14px;
   display:grid;
@@ -768,15 +749,13 @@ img, svg{ max-width:100%; height:auto; display:block; }
   .cards-4{ grid-template-columns: repeat(2, 1fr); }
   .cards-3{ grid-template-columns: 1fr; }
   .contact-card{ grid-template-columns: 1fr; }
-
   .sticky-story__content{ padding-left: 0; }
 }
-
 @media (max-width: 760px){
   .nav-toggle{ display:inline-flex; align-items:center; justify-content:center; }
   .nav-menu{
     position:absolute; right:0; top:54px;
-    width:min(320px, calc(100vw - 24px));
+    width:min(340px, calc(100vw - 24px));
     padding:10px;
     border-radius:18px;
     border:1px solid rgba(255,255,255,.14);
