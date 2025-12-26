@@ -133,44 +133,475 @@
       </svg>
     </section>
 
-    <!-- STICKY / BLUR STORY -->
-    <section class="sticky-story" id="methode-immersive" aria-label="Méthode immersive">
-      <div class="sticky-story__media bg-pro" aria-hidden="true"></div>
+<!doctype html>
+<html lang="fr" id="top">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <meta name="description" content="Lysis Formation — Logic Pro 11, mixage, production. Une méthode claire : comprendre, pratiquer, finaliser." />
 
-      <!-- Texte gauche (ne doit apparaître QUE pendant cette section) -->
-      <div class="sticky-left" aria-hidden="true">
-        <div class="sticky-left__stack">
-          <div class="sticky-left__item" data-left="0">
-            <div class="sticky-kicker">Méthode de formation</div>
-            <h2 class="sticky-title">Comprendre. Pratiquer. Finaliser.</h2>
-            <p class="sticky-sub">Progression claire : workflow, écoute, décisions. Objectif : résultat solide.</p>
-            <div class="sticky-pills">
-              <span class="pill">Logic Pro 11</span>
-              <span class="pill">Mixage</span>
-              <span class="pill">Prise de son</span>
-              <span class="pill">Réalisation</span>
+  <title>Lysis Formation</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Favicon (optionnel) -->
+  <link rel="icon" href="assets/favicon.png" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="js/script.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Aller au contenu</a>
+  <div class="top-glow" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Retour en haut">
+        <span class="brand-mark" aria-hidden="true">LY</span>
+        <span class="brand-text">
+          <span class="brand-name">Lysis Formation</span>
+          <span class="brand-tagline">Logic Pro 11 • Mixage • Méthode</span>
+        </span>
+      </a>
+
+      <nav class="nav" aria-label="Navigation">
+        <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navMenu">
+          <span class="nav-toggle-lines" aria-hidden="true"></span>
+        </button>
+
+        <div class="nav-menu" id="navMenu" role="menu">
+          <a href="#prestations" role="menuitem">Prestations</a>
+          <a href="#formations" role="menuitem">Formations</a>
+          <a href="#methode-immersive" role="menuitem">Méthode</a>
+          <a class="nav-cta" href="#contact" role="menuitem">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="section section-photo bg-hero hero" aria-label="Accueil">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow" data-reveal>Logic Pro 11 — une méthode claire, orientée résultat</span>
+
+          <h1 class="hero-title" data-reveal>
+            Comprendre le mix.
+            <span class="accent">Pratiquer</span> utile.
+            Finaliser propre.
+          </h1>
+
+          <p class="hero-subtitle" data-reveal>
+            On travaille sur ta session (ou un projet guidé) : organisation, écoute, décisions.
+            Objectif : un rendu cohérent et reproductible.
+          </p>
+
+          <div class="hero-actions" data-reveal>
+            <a class="btn btn-primary" href="#formations">Voir les formations</a>
+            <a class="btn btn-ghost" href="#methode-immersive">Découvrir la méthode</a>
+          </div>
+
+          <!-- Level picker (piloté par script.js) -->
+          <div class="level-picker" data-reveal>
+            <div class="level-picker-title">Choisis ton niveau</div>
+            <div class="segmented" role="tablist" aria-label="Niveaux">
+              <button class="seg-btn is-active" type="button" data-level="debutant" role="tab" aria-selected="true">Débutant</button>
+              <button class="seg-btn" type="button" data-level="intermediaire" role="tab" aria-selected="false">Intermédiaire</button>
+              <button class="seg-btn" type="button" data-level="avance" role="tab" aria-selected="false">Avancé / Pro</button>
+            </div>
+            <p class="level-helper" id="levelHelper">Bases solides + autonomie sur Logic Pro 11, avec une méthode simple et efficace.</p>
+          </div>
+
+          <div class="hero-badges" data-reveal>
+            <span class="pill">Session propre</span>
+            <span class="pill">Décisions rapides</span>
+            <span class="pill">Rendu qui translate</span>
+            <span class="pill">Exports clean</span>
+          </div>
+        </div>
+
+        <!-- Hero card -->
+        <div class="hero-card-wrap" data-reveal>
+          <div class="hero-card">
+            <div class="hero-card-top">
+              <div class="hero-card-kicker">En bref</div>
+              <div class="hero-card-title">Objectif : résultat solide</div>
+              <div class="hero-card-sub">La méthode s’adapte à ton niveau et à ton projet.</div>
+            </div>
+
+            <div class="hero-card-body">
+              <div class="metric">
+                <div class="metric-label">Niveau</div>
+                <div class="metric-value" id="metricLevel">Débutant</div>
+              </div>
+              <div class="divider"></div>
+
+              <div class="metric">
+                <div class="metric-label">Focus</div>
+                <div class="metric-value" id="metricFocus">Autonomie & workflow</div>
+              </div>
+              <div class="divider"></div>
+
+              <div class="metric">
+                <div class="metric-label">Résultat</div>
+                <div class="metric-value" id="metricResult">Un projet propre et clair</div>
+              </div>
+
+              <div class="divider"></div>
+              <ul class="checklist" id="heroChecklist">
+                <li>Interface & workflow Logic Pro</li>
+                <li>Enregistrer / éditer proprement</li>
+                <li>Structurer un morceau</li>
+                <li>Exporter sans surprise</li>
+              </ul>
+            </div>
+
+            <div class="hero-card-footer">
+              <a class="btn btn-small btn-primary" href="#contact">Me contacter</a>
+              <a class="btn btn-small btn-ghost" href="#prestations">Prestations</a>
+            </div>
+          </div>
+          <div class="hero-card-shadow" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <svg class="section-wave" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,40 C240,120 480,0 720,60 C960,120 1200,20 1440,70 L1440,120 L0,120 Z"></path>
+      </svg>
+    </section>
+
+    <!-- PRESTATIONS -->
+    <section class="section section-alt" id="prestations" aria-label="Prestations">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <h2 class="section-title">Prestations (ingénieur du son)</h2>
+          <p class="section-subtitle">Un accompagnement précis : prise de son, mixage, édition, préparation, exports.</p>
+        </div>
+
+        <div class="grid cards-3">
+          <article class="card" data-reveal>
+            <div class="card-top">
+              <span class="tag">Studio / Projet</span>
+              <h3>Mixage & équilibre</h3>
+              <p>Lisibilité, profondeur, cohérence. Priorités claires.</p>
+            </div>
+            <ul class="card-list">
+              <li>Gain staging</li>
+              <li>Espace (pan / profondeur)</li>
+              <li>Automation utile</li>
+            </ul>
+          </article>
+
+          <article class="card" data-reveal>
+            <div class="card-top">
+              <span class="tag">Audio</span>
+              <h3>Édition & nettoyage</h3>
+              <p>Propreté et timing sans casser l’intention.</p>
+            </div>
+            <ul class="card-list">
+              <li>Édition vocale/instru</li>
+              <li>Nettoyage discret</li>
+              <li>Organisation session</li>
+            </ul>
+          </article>
+
+          <article class="card" data-reveal>
+            <div class="card-top">
+              <span class="tag">Livrables</span>
+              <h3>Exports & stems</h3>
+              <p>Exports fiables, fichiers clairs, sans surprises.</p>
+            </div>
+            <ul class="card-list">
+              <li>Stems / instrumental</li>
+              <li>Versions / formats</li>
+              <li>Préparation diffusion</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMATIONS -->
+    <section class="section" id="formations" aria-label="Formations">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <h2 class="section-title">Formations (pédagogie)</h2>
+          <p class="section-subtitle">
+            Parcours modulable : initiation, autonomie, structuration, finition.
+            On avance avec une méthode simple et reproductible.
+          </p>
+        </div>
+
+        <div class="grid cards-4">
+          <article class="card" data-reveal>
+            <div class="card-top">
+              <span class="tag">2 jours</span>
+              <h3>Initiation Logic Pro 11</h3>
+              <p>Comprendre l’environnement et sortir un premier rendu propre.</p>
+            </div>
+            <div class="card-actions">
+              <a class="btn btn-small btn-primary" href="#contact">Demander le programme</a>
+            </div>
+          </article>
+
+          <article class="card" data-reveal>
+            <div class="card-top">
+              <span class="tag">10 jours</span>
+              <h3>Mix & production</h3>
+              <p>Workflow + écoute + décisions : du projet à la validation.</p>
+            </div>
+            <div class="card-actions">
+              <a class="btn btn-small btn-primary" href="#contact">Se renseigner</a>
+            </div>
+          </article>
+
+          <article class="card" data-reveal>
+            <div class="card-top">
+              <span class="tag">À la demande</span>
+              <h3>Coaching projet</h3>
+              <p>On travaille sur ton morceau : méthode, corrections, routine.</p>
+            </div>
+            <div class="card-actions">
+              <a class="btn btn-small btn-primary" href="#contact">Réserver un appel</a>
+            </div>
+          </article>
+
+          <article class="card" data-reveal>
+            <div class="card-top">
+              <span class="tag">Livrables</span>
+              <h3>Checklists & templates</h3>
+              <p>Un cadre simple pour être autonome et constant.</p>
+            </div>
+            <div class="card-actions">
+              <a class="btn btn-small btn-ghost" href="#methode-immersive">Voir la méthode</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- STICKY / BLUR STORY (REFONTE CLARTÉ) -->
+    <section class="sticky-story bg-pro" id="methode-immersive" aria-label="Méthode immersive">
+      <div class="sticky-story__media" aria-hidden="true"></div>
+
+      <!-- LEFT: sommaire clair -->
+      <aside class="sticky-left" aria-hidden="false">
+        <div class="sticky-panel">
+          <span class="sticky-kicker">Méthode</span>
+          <h2 class="sticky-title"><span class="accent">Comprendre</span> → Pratiquer → Finaliser</h2>
+          <p class="sticky-sub" id="stickySub">
+            On clarifie ton objectif et on trace un plan simple (priorités, ordre, routine).
+          </p>
+
+          <nav class="sticky-nav" aria-label="Étapes de la méthode">
+            <button class="sticky-nav__item is-active" type="button" data-left="0" data-target="#step-comprendre">
+              <span class="sticky-nav__num">1</span>
+              <span class="sticky-nav__txt">
+                <strong>Comprendre</strong>
+                <em>diagnostic & plan</em>
+              </span>
+            </button>
+
+            <button class="sticky-nav__item" type="button" data-left="1" data-target="#step-pratiquer">
+              <span class="sticky-nav__num">2</span>
+              <span class="sticky-nav__txt">
+                <strong>Pratiquer</strong>
+                <em>exercices guidés</em>
+              </span>
+            </button>
+
+            <button class="sticky-nav__item" type="button" data-left="2" data-target="#step-finaliser">
+              <span class="sticky-nav__num">3</span>
+              <span class="sticky-nav__txt">
+                <strong>Finaliser</strong>
+                <em>validation & export</em>
+              </span>
+            </button>
+
+            <span class="sticky-nav__progress" aria-hidden="true"></span>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- RIGHT: chapitres actionnables (pas des bulles) -->
+      <div class="container sticky-story__content">
+        <div class="sticky-story__spacer" aria-hidden="true"></div>
+
+        <article class="story-panel is-visible" id="step-comprendre" data-step="0">
+          <header class="story-panel__head">
+            <span class="story-badge">Étape 1</span>
+            <h3 class="story-panel__title">Comprendre</h3>
+            <p class="story-panel__lead">On enlève le flou : où tu en es, où tu vas, et quoi faire en premier.</p>
+          </header>
+
+          <div class="story-panel__grid">
+            <div class="story-box">
+              <h4>Objectif</h4>
+              <p>Direction sonore + priorités claires (sans te disperser).</p>
+            </div>
+            <div class="story-box">
+              <h4>On fait</h4>
+              <ul>
+                <li>Organisation session + workflow</li>
+                <li>Références & intention</li>
+                <li>Plan simple (ordre des actions)</li>
+              </ul>
+            </div>
+            <div class="story-box">
+              <h4>Livrable</h4>
+              <p>Feuille de route + session rangée et prête.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-panel" id="step-pratiquer" data-step="1">
+          <header class="story-panel__head">
+            <span class="story-badge">Étape 2</span>
+            <h3 class="story-panel__title">Pratiquer</h3>
+            <p class="story-panel__lead">On installe des automatismes : décisions rapides, rendu cohérent.</p>
+          </header>
+
+          <div class="story-panel__grid">
+            <div class="story-box">
+              <h4>Objectif</h4>
+              <p>Un workflow fluide et stable (même quand tu reprends plus tard).</p>
+            </div>
+            <div class="story-box">
+              <h4>On fait</h4>
+              <ul>
+                <li>Gain staging & équilibre</li>
+                <li>Espace : pan / profondeur</li>
+                <li>Automations utiles</li>
+              </ul>
+            </div>
+            <div class="story-box">
+              <h4>Livrable</h4>
+              <p>Routine de travail simple, reproductible.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-panel" id="step-finaliser" data-step="2">
+          <header class="story-panel__head">
+            <span class="story-badge">Étape 3</span>
+            <h3 class="story-panel__title">Finaliser</h3>
+            <p class="story-panel__lead">On sécurise la translation et on sort des exports propres.</p>
+          </header>
+
+          <div class="story-panel__grid">
+            <div class="story-box">
+              <h4>Objectif</h4>
+              <p>Un rendu cohérent partout (enceintes / voiture / écouteurs / téléphone).</p>
+            </div>
+            <div class="story-box">
+              <h4>On fait</h4>
+              <ul>
+                <li>Balance tonale & références</li>
+                <li>Routine de validation rapide</li>
+                <li>Exports (stems / versions / formats)</li>
+              </ul>
+            </div>
+            <div class="story-box">
+              <h4>Livrable</h4>
+              <p>Checklist finale + exports prêts.</p>
             </div>
           </div>
 
-          <div class="sticky-left__item" data-left="1">
-            <div class="sticky-kicker">Étape 1</div>
-            <h2 class="sticky-title">Clarté</h2>
-            <p class="sticky-sub">Priorités, gain staging, espace : savoir quoi écouter et quoi corriger.</p>
+          <div class="story-cta">
+            <h4>Tu veux qu’on le fasse sur ton projet ?</h4>
+            <p>Tu viens avec une session, on applique la méthode, tu repars avec un rendu solide.</p>
+            <div class="story-cta-actions">
+              <a class="btn btn-primary" href="#contact">Me contacter</a>
+              <a class="btn btn-ghost" href="#formations">Voir les formations</a>
+            </div>
+          </div>
+        </article>
+
+        <div class="sticky-story__spacer" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section section-photo bg-contact" id="contact" aria-label="Contact">
+      <div class="container">
+        <div class="contact-card" data-reveal>
+          <div class="contact-copy">
+            <h2>Contact</h2>
+            <p>Dis-moi ton niveau, ton objectif, et si tu as déjà une session Logic Pro. Je te réponds avec une proposition claire.</p>
+
+            <div class="contact-rows">
+              <div class="contact-row">
+                <div class="contact-label">Email</div>
+                <div class="contact-value">
+                  <a href="mailto:lysis.asso.gmail.com">lysis.asso.gmail.com</a>
+                </div>
+              </div>
+
+              <div class="contact-row">
+                <div class="contact-label">Objet</div>
+                <div class="contact-value">Formation / Coaching / Prestation</div>
+              </div>
+            </div>
+
+            <div class="contact-actions">
+              <a class="btn btn-primary" href="mailto:lysis.asso.gmail.com?subject=Demande%20Lysis%20Formation">Envoyer un email</a>
+              <a class="btn btn-ghost" href="#top">Revenir en haut</a>
+            </div>
           </div>
 
-          <div class="sticky-left__item" data-left="2">
-            <div class="sticky-kicker">Étape 2</div>
-            <h2 class="sticky-title">Pratique</h2>
-            <p class="sticky-sub">Exercices utiles + retours précis. Le workflow devient fluide et propre.</p>
-          </div>
+          <div class="contact-side">
+            <div class="quote">
+              <div class="quote-title">Ce qu’on vise</div>
+              <p>Une méthode simple. Des décisions claires. Un rendu qui tient partout.</p>
+            </div>
 
-          <div class="sticky-left__item" data-left="3">
-            <div class="sticky-kicker">Étape 3</div>
-            <h2 class="sticky-title">Finition</h2>
-            <p class="sticky-sub">Translation, cohérence, routine de validation : un rendu qui tient partout.</p>
+            <div class="mini-faq">
+              <div>
+                <div class="mini-faq-q">Tu dois déjà être “bon” ?</div>
+                <div class="mini-faq-a">Non. On part de ton niveau et on te donne une routine.</div>
+              </div>
+              <div>
+                <div class="mini-faq-q">On travaille sur mon morceau ?</div>
+                <div class="mini-faq-a">Oui, idéalement. Sinon projet guidé possible.</div>
+              </div>
+            </div>
           </div>
         </div>
+
+        <footer class="footer" role="contentinfo">
+          <div class="footer-inner">
+            <div>
+              <div class="footer-brand">Lysis Formation</div>
+              <div class="footer-note">Logic Pro 11 • Mixage • Production • Méthode</div>
+            </div>
+
+            <div class="footer-links">
+              <a href="#prestations">Prestations</a>
+              <a href="#formations">Formations</a>
+              <a href="#methode-immersive">Méthode</a>
+              <a href="#top">Haut</a>
+            </div>
+          </div>
+
+          <div class="footer-bottom">
+            <span>© <span id="year"></span> Lysis</span>
+            <span class="dot">•</span>
+            <span>Contact : <a href="mailto:lysis.asso.gmail.com">lysis.asso.gmail.com</a></span>
+          </div>
+        </footer>
       </div>
+    </section>
+  </main>
+</body>
+</html>
+
 
       <!-- Contenu scroll (sert de repères pour activer les steps) -->
       <div class="container sticky-story__content">
