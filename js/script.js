@@ -124,20 +124,37 @@
     btn.addEventListener("click", () => setLevel(btn.dataset.level));
   });
 
-  // ===== Sticky story: show left only during section + sync current step (no accumulation)
+  // ===== Sticky story (refonte claire : sommaire + chapitres)
   const story = $(".sticky-story");
   const media = $(".sticky-story__media");
   const steps = $$("[data-step]", story || document);
-  const leftItems = $$(".sticky-left__item", story || document);
 
-  const activateLeft = (idx) => {
-    leftItems.forEach((it) => it.classList.remove("is-active"));
-    const el = leftItems.find((x) => Number(x.dataset.left) === idx);
-    if (el) el.classList.add("is-active");
+  const navItems = $$(".sticky-nav__item", story || document);
+  const stickySub = $("#stickySub");
+
+  const SUBS = [
+    "On clarifie ton objectif et on trace un plan simple (priorités, ordre, routine).",
+    "On installe des automatismes : workflow, équilibre, espace, décisions plus rapides.",
+    "On valide le rendu partout : routine de contrôle, exports propres, checklist de fin.",
+  ];
+
+  const setProgress = (idx) => {
+    // 3 étapes => 0%, 50%, 100%
+    const pct = idx <= 0 ? 0 : idx === 1 ? 50 : 100;
+    if (story) story.style.setProperty("--progress", `${pct}%`);
   };
 
-  if (story && leftItems.length) {
-    // Hide/show fixed left depending on section visibility
+  const activateLeft = (idx) => {
+    navItems.forEach((it) => it.classList.remove("is-active"));
+    const el = navItems.find((x) => Number(x.dataset.left) === idx);
+    if (el) el.classList.add("is-active");
+
+    if (stickySub && SUBS[idx]) stickySub.textContent = SUBS[idx];
+    setProgress(idx);
+  };
+
+  if (story) {
+    // Show/hide left panel only when story is in view
     const storyIO = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -145,26 +162,24 @@
 
           if (entry.isIntersecting) {
             story.classList.add("is-inview");
-            // Intro visible as soon as we enter the sticky section (and only there)
             activateLeft(0);
+            steps.forEach((s, i) => s.classList.toggle("is-visible", i === 0));
           } else {
             story.classList.remove("is-inview");
-            // cleanup visible steps to avoid weird state when coming back
             steps.forEach((s) => s.classList.remove("is-visible"));
           }
         });
       },
-      { threshold: 0.01 }
+      { threshold: 0.02 }
     );
     storyIO.observe(story);
 
-    // Step observer: keep only ONE step bubble visible at a time
+    // Keep only ONE chapter visible at a time
     if (steps.length) {
       let currentIdx = -1;
 
       const stepIO = new IntersectionObserver(
         (entries) => {
-          // pick the most visible step
           const visible = entries
             .filter((e) => e.isIntersecting)
             .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
@@ -177,16 +192,8 @@
 
           currentIdx = idx;
 
-          // show only current bubble
-          steps.forEach((s) => s.classList.remove("is-visible"));
-          steps[idx].classList.add("is-visible");
-
-          // left sync (0 is intro)
-          // step0->left1, step1->left2, step2->left3, step3(CTA)->left0
-          if (idx === 0) activateLeft(1);
-          else if (idx === 1) activateLeft(2);
-          else if (idx === 2) activateLeft(3);
-          else activateLeft(0);
+          steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
+          activateLeft(idx);
         },
         {
           threshold: [0.25, 0.45, 0.6, 0.75],
@@ -197,7 +204,17 @@
       steps.forEach((el) => stepIO.observe(el));
     }
 
-    // Optional: subtle blur dynamics on scroll (safe + light)
+    // Click on left summary => scroll to chapter
+    navItems.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetSel = btn.dataset.target;
+        const target = targetSel ? $(targetSel) : null;
+        if (!target) return;
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+
+    // Subtle blur dynamics
     if (media) {
       let raf = 0;
       const onScroll = () => {
@@ -207,13 +224,11 @@
           const rect = story.getBoundingClientRect();
           const vh = window.innerHeight || 1;
 
-          // progress inside sticky section
           const start = vh * 0.05;
           const end = vh * 0.95;
           const t = (start - rect.top) / Math.max(1, (rect.height - (end - start)));
           const p = Math.min(1, Math.max(0, t));
 
-          // blur goes from ~2px to 0px
           const blur = (1 - p) * 2;
           media.style.setProperty("--blur", `${blur.toFixed(2)}px`);
         });
@@ -222,4 +237,7 @@
       onScroll();
     }
   }
+
+  // ===== Default level (safe)
+  setLevel("debutant");
 })();
