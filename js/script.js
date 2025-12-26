@@ -3,74 +3,71 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  // ===== Year
+  // ===== Footer year
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
   // ===== Mobile nav
   const navToggle = $(".nav-toggle");
   const navMenu = $("#navMenu");
-
-  const closeMenu = () => {
-    if (!navToggle || !navMenu) return;
-    navMenu.classList.remove("is-open");
-    navToggle.setAttribute("aria-expanded", "false");
-  };
-
   if (navToggle && navMenu) {
-    navToggle.addEventListener("click", () => {
-      const open = navMenu.classList.toggle("is-open");
-      navToggle.setAttribute("aria-expanded", String(open));
+    const closeMenu = () => {
+      navMenu.classList.remove("is-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    };
+    const openMenu = () => {
+      navMenu.classList.add("is-open");
+      navToggle.setAttribute("aria-expanded", "true");
+    };
+
+    navToggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      const isOpen = navMenu.classList.contains("is-open");
+      isOpen ? closeMenu() : openMenu();
     });
 
-    // Close on link click
-    $$("#navMenu a").forEach((a) => a.addEventListener("click", closeMenu));
-
-    // Close on outside click
     document.addEventListener("click", (e) => {
       if (!navMenu.classList.contains("is-open")) return;
-      const target = e.target;
-      if (target instanceof Node && !navMenu.contains(target) && !navToggle.contains(target)) closeMenu();
+      const t = e.target;
+      const clickedInside = navMenu.contains(t) || navToggle.contains(t);
+      if (!clickedInside) closeMenu();
     });
 
-    // Close on ESC
+    $$("a", navMenu).forEach((a) => a.addEventListener("click", closeMenu));
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeMenu();
     });
   }
 
-  // ===== Reveal on scroll
+  // ===== Reveal on scroll (generic)
   const revealEls = $$("[data-reveal]");
-  if ("IntersectionObserver" in window) {
+  if (revealEls.length) {
     const revealIO = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
-          revealIO.unobserve(entry.target);
+          if (entry.isIntersecting) entry.target.classList.add("is-visible");
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.15 }
     );
     revealEls.forEach((el) => revealIO.observe(el));
-  } else {
-    revealEls.forEach((el) => el.classList.add("is-visible"));
   }
 
-  // ===== Level picker (hero)
-  const helper = $("#levelHelper");
+  // ===== Level picker
+  const levelHelper = $("#levelHelper");
   const metricLevel = $("#metricLevel");
   const metricFocus = $("#metricFocus");
   const metricResult = $("#metricResult");
-  const checklist = $("#heroChecklist");
+  const heroChecklist = $("#heroChecklist");
+  const levelBtns = $$(".seg-btn");
 
-  const levels = {
+  const LEVELS = {
     debutant: {
       label: "Débutant",
       helper: "Bases solides + autonomie sur Logic Pro 11, avec une méthode simple et efficace.",
       focus: "Autonomie & workflow",
       result: "Un projet propre et clair",
-      items: [
+      checklist: [
         "Interface & workflow Logic Pro",
         "Enregistrer / éditer proprement",
         "Structurer un morceau",
@@ -79,97 +76,59 @@
     },
     intermediaire: {
       label: "Intermédiaire",
-      helper: "Méthode de production + mix : décisions plus rapides, sessions plus propres, rendu plus cohérent.",
-      focus: "Mix & structure",
-      result: "Un rendu cohérent",
-      items: [
+      helper: "Structurer la production et le mix : décisions plus rapides, rendu plus cohérent.",
+      focus: "Équilibre & espace",
+      result: "Un mix lisible et stable",
+      checklist: [
         "Gain staging & équilibre",
-        "Espace (pan / depth)",
+        "Pan / profondeur",
         "Automation utile",
         "Organisation de session",
       ],
     },
     avance: {
       label: "Avancé / Pro",
-      helper: "Cap pro : translation, cohérence, finition. Méthode réutilisable sur tous tes projets.",
-      focus: "Finition & signature",
+      helper: "Cap finition : translation, cohérence, routine de validation et signature.",
+      focus: "Finition & translation",
       result: "Un rendu qui tient partout",
-      items: [
-        "Balance tonale & translation",
-        "Glue & profondeur",
-        "Routine de contrôle",
+      checklist: [
+        "Balance tonale & références",
+        "Glue / profondeur",
+        "Contrôle et validation",
         "Pré-master propre",
       ],
     },
   };
 
   const setLevel = (key) => {
-    const data = levels[key];
+    const data = LEVELS[key];
     if (!data) return;
 
-    // buttons
-    $$(".seg-btn").forEach((b) => {
+    levelBtns.forEach((b) => {
       const active = b.dataset.level === key;
       b.classList.toggle("is-active", active);
       b.setAttribute("aria-selected", active ? "true" : "false");
     });
 
-    // text
-    if (helper) helper.textContent = data.helper;
+    if (levelHelper) levelHelper.textContent = data.helper;
     if (metricLevel) metricLevel.textContent = data.label;
     if (metricFocus) metricFocus.textContent = data.focus;
     if (metricResult) metricResult.textContent = data.result;
 
-    // list
-    if (checklist) {
-      checklist.innerHTML = "";
-      data.items.forEach((txt) => {
-        const li = document.createElement("li");
-        li.textContent = txt;
-        checklist.appendChild(li);
-      });
+    if (heroChecklist) {
+      heroChecklist.innerHTML = data.checklist.map((t) => `<li>${t}</li>`).join("");
     }
   };
 
-  $$(".seg-btn").forEach((btn) => {
+  levelBtns.forEach((btn) => {
     btn.addEventListener("click", () => setLevel(btn.dataset.level));
   });
 
-  // ===== Email links (keeps your displayed text, builds a working mailto)
-  const normalizeEmailForMailto = (raw) => {
-    const s = String(raw || "").trim();
-    if (!s) return "";
-    // If user writes "lysis.asso.gmail.com" we convert to "lysis.asso@gmail.com" for mailto only.
-    if (s.includes("@")) return s;
-    if (s.endsWith(".gmail.com")) return s.replace(".gmail.com", "@gmail.com");
-    return s;
-  };
-
-  const setMailto = (el, emailRaw, subject, body) => {
-    const email = normalizeEmailForMailto(emailRaw);
-    if (!email) return;
-
-    let href = `mailto:${encodeURIComponent(email)}`;
-    const params = [];
-    if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
-    if (body) params.push(`body=${body}`); // body is already url-encoded in HTML dataset
-    if (params.length) href += `?${params.join("&")}`;
-    el.setAttribute("href", href);
-  };
-
-  $$(".js-email-link").forEach((a) => {
-    setMailto(a, a.dataset.email);
-  });
-
-  $$(".js-email-cta").forEach((a) => {
-    setMailto(a, a.dataset.email, a.dataset.subject || "", a.dataset.body || "");
-  });
-
-  // ===== Sticky story: show left overlay ONLY during sticky photo + sync with steps
-  const stickySection = $(".sticky-story");
-  const stickyMedia = $(".sticky-story__media");
-  const steps = $$("[data-step]");
-  const leftItems = $$(".sticky-left__item");
+  // ===== Sticky story: show left only during section + sync current step (no accumulation)
+  const story = $(".sticky-story");
+  const media = $(".sticky-story__media");
+  const steps = $$("[data-step]", story || document);
+  const leftItems = $$(".sticky-left__item", story || document);
 
   const activateLeft = (idx) => {
     leftItems.forEach((it) => it.classList.remove("is-active"));
@@ -177,52 +136,90 @@
     if (el) el.classList.add("is-active");
   };
 
-  if (stickySection && stickyMedia && "IntersectionObserver" in window) {
-    const sectionIO = new IntersectionObserver(
+  if (story && leftItems.length) {
+    // Hide/show fixed left depending on section visibility
+    const storyIO = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          if (entry.target !== story) return;
+
           if (entry.isIntersecting) {
-            stickySection.classList.add("is-inview");
-            activateLeft(0); // Intro uniquement à l'entrée de la 2e photo
+            story.classList.add("is-inview");
+            // Intro visible as soon as we enter the sticky section (and only there)
+            activateLeft(0);
           } else {
-            stickySection.classList.remove("is-inview");
-            leftItems.forEach((it) => it.classList.remove("is-active"));
+            story.classList.remove("is-inview");
+            // cleanup visible steps to avoid weird state when coming back
+            steps.forEach((s) => s.classList.remove("is-visible"));
           }
         });
       },
-      {
-        threshold: 0.01,
-        rootMargin: "0px 0px -45% 0px",
-      }
+      { threshold: 0.01 }
     );
+    storyIO.observe(story);
 
-    sectionIO.observe(stickyMedia);
-  } else if (stickySection) {
-    // fallback
-    stickySection.classList.add("is-inview");
-    activateLeft(0);
-  }
+    // Step observer: keep only ONE step bubble visible at a time
+    if (steps.length) {
+      let currentIdx = -1;
 
-  if ("IntersectionObserver" in window) {
-    const stepIO = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
+      const stepIO = new IntersectionObserver(
+        (entries) => {
+          // pick the most visible step
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
 
-          entry.target.classList.add("is-visible");
+          if (!visible.length) return;
 
-          const idx = steps.indexOf(entry.target);
+          const top = visible[0].target;
+          const idx = steps.indexOf(top);
+          if (idx === -1 || idx === currentIdx) return;
+
+          currentIdx = idx;
+
+          // show only current bubble
+          steps.forEach((s) => s.classList.remove("is-visible"));
+          steps[idx].classList.add("is-visible");
+
+          // left sync (0 is intro)
+          // step0->left1, step1->left2, step2->left3, step3(CTA)->left0
           if (idx === 0) activateLeft(1);
           else if (idx === 1) activateLeft(2);
           else if (idx === 2) activateLeft(3);
-          else activateLeft(3); // CTA : on garde étape 3 (pas de retour intro)
-        });
-      },
-      { threshold: 0.55 }
-    );
+          else activateLeft(0);
+        },
+        {
+          threshold: [0.25, 0.45, 0.6, 0.75],
+          rootMargin: "-10% 0px -30% 0px",
+        }
+      );
 
-    steps.forEach((el) => stepIO.observe(el));
-  } else {
-    steps.forEach((el) => el.classList.add("is-visible"));
+      steps.forEach((el) => stepIO.observe(el));
+    }
+
+    // Optional: subtle blur dynamics on scroll (safe + light)
+    if (media) {
+      let raf = 0;
+      const onScroll = () => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          const rect = story.getBoundingClientRect();
+          const vh = window.innerHeight || 1;
+
+          // progress inside sticky section
+          const start = vh * 0.05;
+          const end = vh * 0.95;
+          const t = (start - rect.top) / Math.max(1, (rect.height - (end - start)));
+          const p = Math.min(1, Math.max(0, t));
+
+          // blur goes from ~2px to 0px
+          const blur = (1 - p) * 2;
+          media.style.setProperty("--blur", `${blur.toFixed(2)}px`);
+        });
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
   }
 })();
