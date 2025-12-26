@@ -6,13 +6,12 @@
   <meta name="theme-color" content="#0b0f14" />
 
   <title>Lysis — Formations MAO (Logic Pro 11), Mixage, Prise de son, Réalisation</title>
-  <meta name="description" content="Formations MAO (Logic Pro 11), mixage, prise de son et réalisation musicale. Du niveau débutant au niveau avancé/pro. Méthode claire, pratique, orientée résultat." />
+  <meta name="description" content="Formations MAO (Logic Pro 11), mixage, prise de son et réalisation musicale. Du niveau débutant au niveau avancé/pro." />
 
   <link rel="icon" href="assets/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -48,11 +47,9 @@
   </header>
 
   <main id="content">
-
     <!-- HERO -->
     <section class="hero section section-photo"
       style="--bg-photo: url('assets/bg-hero.webp'); --bg-photo-opacity:.40;">
-
       <div class="container hero-grid">
         <div class="hero-copy">
           <div class="eyebrow" data-reveal>Logic Pro 11 • Mixage • Prise de son • Réalisation</div>
@@ -127,7 +124,6 @@
               <a class="btn btn-ghost btn-small" href="#formations">Formations</a>
             </div>
           </div>
-
           <div class="hero-card-shadow" aria-hidden="true"></div>
         </div>
       </div>
@@ -140,39 +136,53 @@
     <!-- STICKY / BLUR STORY -->
     <section class="sticky-story" id="methode-immersive">
       <div class="sticky-story__media"
-        style="--bg-photo: url('assets/bg-pro.webp'); --bg-photo-opacity:.62;"
+        style="--bg-photo: url('assets/bg-pro.webp');"
         aria-hidden="true"></div>
 
-      <!-- TEXTE SUR L’IMAGE (au départ) -->
-      <div class="sticky-hero-copy" aria-hidden="true">
-        <div class="sticky-kicker">Méthode de formation</div>
-        <h2 class="sticky-title">Comprendre. Pratiquer. Finaliser.</h2>
-        <p class="sticky-sub">
-          Une progression claire : workflow, écoute, décisions.
-          L’objectif : un résultat solide, réutilisable, mesurable.
-        </p>
-        <div class="sticky-pills">
-          <span class="pill">Logic Pro 11</span>
-          <span class="pill">Mixage</span>
-          <span class="pill">Prise de son</span>
-          <span class="pill">Réalisation</span>
+      <!-- Texte gauche (remplacement par le bas) -->
+      <div class="sticky-left" aria-hidden="true">
+        <div class="sticky-left__stack">
+          <div class="sticky-left__item is-active" data-left="0">
+            <div class="sticky-kicker">Méthode de formation</div>
+            <h2 class="sticky-title">Comprendre. Pratiquer. Finaliser.</h2>
+            <p class="sticky-sub">Une progression claire : workflow, écoute, décisions. Objectif : résultat solide.</p>
+            <div class="sticky-pills">
+              <span class="pill">Logic Pro 11</span><span class="pill">Mixage</span><span class="pill">Prise de son</span><span class="pill">Réalisation</span>
+            </div>
+          </div>
+
+          <div class="sticky-left__item" data-left="1">
+            <div class="sticky-kicker">Étape 1</div>
+            <h2 class="sticky-title">Clarté</h2>
+            <p class="sticky-sub">On comprend ce qui compte : gain staging, espace, priorités et contrôle.</p>
+          </div>
+
+          <div class="sticky-left__item" data-left="2">
+            <div class="sticky-kicker">Étape 2</div>
+            <h2 class="sticky-title">Pratique</h2>
+            <p class="sticky-sub">Exercices utiles + retours précis. Le workflow devient fluide et propre.</p>
+          </div>
+
+          <div class="sticky-left__item" data-left="3">
+            <div class="sticky-kicker">Étape 3</div>
+            <h2 class="sticky-title">Finition</h2>
+            <p class="sticky-sub">Translation, cohérence, routine de validation : un rendu qui tient partout.</p>
+          </div>
         </div>
       </div>
 
+      <!-- Bulles à droite (arrivent pendant le flou) -->
       <div class="container sticky-story__content">
         <div class="sticky-story__spacer" aria-hidden="true"></div>
 
-        <!-- STEPS (arrivent par le bas, remplacent le texte) -->
         <div class="story-step" data-step>
           <h3>1) Clarté</h3>
           <p>On comprend ce qui compte : gain staging, espace, priorités et contrôle.</p>
         </div>
-
         <div class="story-step" data-step>
           <h3>2) Pratique</h3>
           <p>Exercices utiles + retours précis. Le workflow devient fluide et propre.</p>
         </div>
-
         <div class="story-step" data-step>
           <h3>3) Finition</h3>
           <p>Translation, cohérence, routine de validation : un rendu qui tient partout.</p>
@@ -196,74 +206,32 @@
       <div class="container">
         <div class="section-head" data-reveal>
           <h2 class="section-title">Les formations</h2>
-          <p class="section-subtitle">
-            Des modules clairs, structurés, orientés résultat. Programmes détaillés, objectifs et livrables selon le niveau.
-          </p>
+          <p class="section-subtitle">Des modules clairs, structurés, orientés résultat.</p>
         </div>
 
         <div class="grid cards-4">
           <article class="card" data-reveal>
-            <div class="card-top">
-              <h3>MAO — Logic Pro 11</h3>
-              <p>De la prise en main à un workflow fluide et propre.</p>
-            </div>
-            <ul class="card-list">
-              <li>Niveaux : Débutant → Avancé</li>
-              <li>Objectif : autonomie</li>
-              <li>Format : individuel / groupe</li>
-            </ul>
-            <div class="card-actions">
-              <a class="btn btn-ghost btn-small" href="#parcours">Parcours</a>
-              <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-            </div>
+            <div class="card-top"><h3>MAO — Logic Pro 11</h3><p>De la prise en main à un workflow fluide et propre.</p></div>
+            <ul class="card-list"><li>Niveaux : Débutant → Avancé</li><li>Objectif : autonomie</li><li>Format : individuel / groupe</li></ul>
+            <div class="card-actions"><a class="btn btn-ghost btn-small" href="#parcours">Parcours</a><a class="btn btn-primary btn-small" href="#contact">Infos</a></div>
           </article>
 
           <article class="card" data-reveal>
-            <div class="card-top">
-              <h3>Mixage</h3>
-              <p>Équilibre, profondeur, translation : un mix qui tient partout.</p>
-            </div>
-            <ul class="card-list">
-              <li>Niveaux : Intermédiaire → Pro</li>
-              <li>Objectif : finition</li>
-              <li>Format : individuel / groupe</li>
-            </ul>
-            <div class="card-actions">
-              <a class="btn btn-ghost btn-small" href="#objectifs">Objectifs</a>
-              <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-            </div>
+            <div class="card-top"><h3>Mixage</h3><p>Équilibre, profondeur, translation : un mix qui tient partout.</p></div>
+            <ul class="card-list"><li>Niveaux : Intermédiaire → Pro</li><li>Objectif : finition</li><li>Format : individuel / groupe</li></ul>
+            <div class="card-actions"><a class="btn btn-ghost btn-small" href="#objectifs">Objectifs</a><a class="btn btn-primary btn-small" href="#contact">Infos</a></div>
           </article>
 
           <article class="card" data-reveal>
-            <div class="card-top">
-              <h3>Prise de son</h3>
-              <p>Micros, placement, phase : capter mieux, mixer plus vite.</p>
-            </div>
-            <ul class="card-list">
-              <li>Niveaux : Débutant → Avancé</li>
-              <li>Objectif : captation propre</li>
-              <li>Format : individuel / groupe</li>
-            </ul>
-            <div class="card-actions">
-              <a class="btn btn-ghost btn-small" href="#methode">Méthode</a>
-              <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-            </div>
+            <div class="card-top"><h3>Prise de son</h3><p>Micros, placement, phase : capter mieux, mixer plus vite.</p></div>
+            <ul class="card-list"><li>Niveaux : Débutant → Avancé</li><li>Objectif : captation propre</li><li>Format : individuel / groupe</li></ul>
+            <div class="card-actions"><a class="btn btn-ghost btn-small" href="#methode">Méthode</a><a class="btn btn-primary btn-small" href="#contact">Infos</a></div>
           </article>
 
           <article class="card" data-reveal>
-            <div class="card-top">
-              <h3>Réalisation musicale</h3>
-              <p>Direction artistique, arrangement, cohérence : finaliser un projet.</p>
-            </div>
-            <ul class="card-list">
-              <li>Niveaux : Intermédiaire → Pro</li>
-              <li>Objectif : identité sonore</li>
-              <li>Format : individuel / groupe</li>
-            </ul>
-            <div class="card-actions">
-              <a class="btn btn-ghost btn-small" href="#parcours">Parcours</a>
-              <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-            </div>
+            <div class="card-top"><h3>Réalisation musicale</h3><p>Direction artistique, arrangement, cohérence : finaliser un projet.</p></div>
+            <ul class="card-list"><li>Niveaux : Intermédiaire → Pro</li><li>Objectif : identité sonore</li><li>Format : individuel / groupe</li></ul>
+            <div class="card-actions"><a class="btn btn-ghost btn-small" href="#parcours">Parcours</a><a class="btn btn-primary btn-small" href="#contact">Infos</a></div>
           </article>
         </div>
       </div>
@@ -279,176 +247,31 @@
 
         <div class="grid cards-3">
           <article class="card" data-level-card="debutant" data-reveal>
-            <div class="card-top">
-              <div class="tag">Débutant</div>
-              <h3>Fondations & autonomie</h3>
-              <p>Comprendre les bases, travailler proprement, finir un projet simple.</p>
-            </div>
+            <div class="card-top"><div class="tag">Débutant</div><h3>Fondations & autonomie</h3><p>Comprendre les bases, travailler proprement, finir un projet simple.</p></div>
             <div class="two-col">
-              <div>
-                <div class="mini-title">Compétences</div>
-                <ul class="card-list">
-                  <li>Workflow Logic Pro 11</li>
-                  <li>Enregistrement / édition</li>
-                  <li>Structure & arrangement</li>
-                  <li>Export propre</li>
-                </ul>
-              </div>
-              <div>
-                <div class="mini-title">Livrables</div>
-                <ul class="card-list">
-                  <li>Template de session</li>
-                  <li>Checklist</li>
-                  <li>Projet final</li>
-                </ul>
-              </div>
+              <div><div class="mini-title">Compétences</div><ul class="card-list"><li>Workflow Logic Pro 11</li><li>Enregistrement / édition</li><li>Structure & arrangement</li><li>Export propre</li></ul></div>
+              <div><div class="mini-title">Livrables</div><ul class="card-list"><li>Template de session</li><li>Checklist</li><li>Projet final</li></ul></div>
             </div>
-            <div class="card-actions">
-              <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-              <a class="btn btn-ghost btn-small" href="#formats">Formats</a>
-            </div>
+            <div class="card-actions"><a class="btn btn-primary btn-small" href="#contact">Infos</a><a class="btn btn-ghost btn-small" href="#formats">Formats</a></div>
           </article>
 
           <article class="card" data-level-card="intermediaire" data-reveal>
-            <div class="card-top">
-              <div class="tag">Intermédiaire</div>
-              <h3>Mix & production structurée</h3>
-              <p>Une méthode claire pour décider plus vite, avec un rendu cohérent.</p>
-            </div>
+            <div class="card-top"><div class="tag">Intermédiaire</div><h3>Mix & production structurée</h3><p>Décider plus vite, rendre le résultat cohérent.</p></div>
             <div class="two-col">
-              <div>
-                <div class="mini-title">Compétences</div>
-                <ul class="card-list">
-                  <li>Gain staging & équilibre</li>
-                  <li>Espace (pan / depth)</li>
-                  <li>Automation</li>
-                  <li>Organisation de session</li>
-                </ul>
-              </div>
-              <div>
-                <div class="mini-title">Livrables</div>
-                <ul class="card-list">
-                  <li>Template “mix clair”</li>
-                  <li>Plan d’action</li>
-                  <li>Avant/Après guidé</li>
-                </ul>
-              </div>
+              <div><div class="mini-title">Compétences</div><ul class="card-list"><li>Gain staging & équilibre</li><li>Espace (pan / depth)</li><li>Automation</li><li>Organisation de session</li></ul></div>
+              <div><div class="mini-title">Livrables</div><ul class="card-list"><li>Template “mix clair”</li><li>Plan d’action</li><li>Avant/Après guidé</li></ul></div>
             </div>
-            <div class="card-actions">
-              <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-              <a class="btn btn-ghost btn-small" href="#methode">Méthode</a>
-            </div>
+            <div class="card-actions"><a class="btn btn-primary btn-small" href="#contact">Infos</a><a class="btn btn-ghost btn-small" href="#methode">Méthode</a></div>
           </article>
 
           <article class="card" data-level-card="avance" data-reveal>
-            <div class="card-top">
-              <div class="tag">Avancé / Pro</div>
-              <h3>Finition & signature</h3>
-              <p>Translation, cohérence, direction artistique : cap “pro”.</p>
-            </div>
+            <div class="card-top"><div class="tag">Avancé / Pro</div><h3>Finition & signature</h3><p>Translation, cohérence, direction artistique : cap “pro”.</p></div>
             <div class="two-col">
-              <div>
-                <div class="mini-title">Compétences</div>
-                <ul class="card-list">
-                  <li>Glue & profondeur</li>
-                  <li>Décisions rapides</li>
-                  <li>Balance tonale</li>
-                  <li>Pré-master propre</li>
-                </ul>
-              </div>
-              <div>
-                <div class="mini-title">Livrables</div>
-                <ul class="card-list">
-                  <li>Routine de contrôle</li>
-                  <li>Références & translation</li>
-                  <li>Mix final</li>
-                </ul>
-              </div>
+              <div><div class="mini-title">Compétences</div><ul class="card-list"><li>Glue & profondeur</li><li>Décisions rapides</li><li>Balance tonale</li><li>Pré-master propre</li></ul></div>
+              <div><div class="mini-title">Livrables</div><ul class="card-list"><li>Routine de contrôle</li><li>Références & translation</li><li>Mix final</li></ul></div>
             </div>
-            <div class="card-actions">
-              <a class="btn btn-primary btn-small" href="#contact">Infos</a>
-              <a class="btn btn-ghost btn-small" href="#objectifs">Objectifs</a>
-            </div>
+            <div class="card-actions"><a class="btn btn-primary btn-small" href="#contact">Infos</a><a class="btn btn-ghost btn-small" href="#objectifs">Objectifs</a></div>
           </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- OBJECTIFS (photo) -->
-    <section class="section section-alt section-photo" id="objectifs"
-      style="--bg-photo: url('assets/bg-pro.webp'); --bg-photo-opacity:.34;">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <h2 class="section-title">Objectifs concrets (niveau avancé)</h2>
-          <p class="section-subtitle">Résultat final, cohérence, translation, décisions efficaces.</p>
-        </div>
-
-        <div class="grid cards-4">
-          <div class="card mini-card" data-reveal>
-            <h3>Translation</h3>
-            <p>Un mix qui tient partout : enceintes, écouteurs, voiture.</p>
-          </div>
-          <div class="card mini-card" data-reveal>
-            <h3>Signature</h3>
-            <p>Couleurs, choix, cohérence artistique, direction.</p>
-          </div>
-          <div class="card mini-card" data-reveal>
-            <h3>Workflow</h3>
-            <p>Organisation, priorités, méthode de contrôle.</p>
-          </div>
-          <div class="card mini-card" data-reveal>
-            <h3>Finition</h3>
-            <p>Propreté, équilibre, glue : rendu solide.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- METHODE (texte) -->
-    <section class="section" id="methode">
-      <div class="container">
-        <div class="section-head" data-reveal>
-          <h2 class="section-title">Une méthode structurée</h2>
-          <p class="section-subtitle">Comprendre, pratiquer, valider. Progression claire et réutilisable.</p>
-        </div>
-
-        <div class="timeline">
-          <div class="step" data-reveal>
-            <div class="step-num">1</div>
-            <div class="step-body">
-              <h3>Objectif</h3>
-              <p>Niveau, style, références, blocage : plan concret.</p>
-            </div>
-          </div>
-          <div class="step" data-reveal>
-            <div class="step-num">2</div>
-            <div class="step-body">
-              <h3>Progression</h3>
-              <p>Étapes simples, exercices utiles, décisions claires.</p>
-            </div>
-          </div>
-          <div class="step" data-reveal>
-            <div class="step-num">3</div>
-            <div class="step-body">
-              <h3>Pratique</h3>
-              <p>Travail sur projets : production, mix, prise de son.</p>
-            </div>
-          </div>
-          <div class="step" data-reveal>
-            <div class="step-num">4</div>
-            <div class="step-body">
-              <h3>Acquis</h3>
-              <p>Templates, checklists, routines : méthode durable.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="cta-band" data-reveal>
-          <div>
-            <h3>Orientation rapide</h3>
-            <p>Niveau + objectif = parcours conseillé. Réponse simple et claire.</p>
-          </div>
-          <a class="btn btn-primary" href="#contact">Contact</a>
         </div>
       </div>
     </section>
@@ -458,46 +281,23 @@
       <div class="container">
         <div class="section-head" data-reveal>
           <h2 class="section-title">Formats & tarifs</h2>
-          <p class="section-subtitle">
-            Formats flexibles et tarifs lisibles. Le contenu exact dépend du parcours, du rythme et des objectifs.
-          </p>
+          <p class="section-subtitle">Formats flexibles et tarifs lisibles.</p>
         </div>
 
         <div class="grid cards-3">
           <article class="card" data-reveal>
-            <div class="card-top">
-              <h3>Individuel</h3>
-              <p>Accompagnement précis, sur objectifs.</p>
-            </div>
-            <ul class="card-list">
-              <li>Durée : selon objectif</li>
-              <li>Tarif : grille / devis</li>
-              <li>Lieu : présentiel</li>
-            </ul>
+            <div class="card-top"><h3>Individuel</h3><p>Accompagnement précis, sur objectifs.</p></div>
+            <ul class="card-list"><li>Durée : selon objectif</li><li>Tarif : grille / devis</li><li>Lieu : présentiel</li></ul>
           </article>
 
           <article class="card" data-reveal>
-            <div class="card-top">
-              <h3>Petit groupe</h3>
-              <p>Dynamique + pratique encadrée.</p>
-            </div>
-            <ul class="card-list">
-              <li>Durée : selon parcours</li>
-              <li>Tarif : grille / devis</li>
-              <li>Effectif : petit groupe</li>
-            </ul>
+            <div class="card-top"><h3>Petit groupe</h3><p>Dynamique + pratique encadrée.</p></div>
+            <ul class="card-list"><li>Durée : selon parcours</li><li>Tarif : grille / devis</li><li>Effectif : petit groupe</li></ul>
           </article>
 
           <article class="card" data-reveal>
-            <div class="card-top">
-              <h3>Sur-mesure</h3>
-              <p>Objectif spécifique : EP, live set, mix final, etc.</p>
-            </div>
-            <ul class="card-list">
-              <li>Brief : objectif défini</li>
-              <li>Durée : selon besoin</li>
-              <li>Tarif : devis</li>
-            </ul>
+            <div class="card-top"><h3>Sur-mesure</h3><p>Objectif spécifique : EP, live set, mix final, etc.</p></div>
+            <ul class="card-list"><li>Brief : objectif défini</li><li>Durée : selon besoin</li><li>Tarif : devis</li></ul>
           </article>
         </div>
       </div>
@@ -529,9 +329,7 @@
 
             <div class="contact-actions">
               <a class="btn btn-primary"
-                 href="mailto:lysis.asso.gmail.com?subject=Demande%20d%27info%20formation&body=Bonjour%2C%0A%0ANiveau%20%3A%20...%0AObjectif%20%3A%20...%0ABlocage%20%3A%20...%0A%0AMerci%20!">
-                Écrire
-              </a>
+                 href="mailto:lysis.asso.gmail.com?subject=Demande%20d%27info%20formation&body=Bonjour%2C%0A%0ANiveau%20%3A%20...%0AObjectif%20%3A%20...%0ABlocage%20%3A%20...%0A%0AMerci%20!">Écrire</a>
               <a class="btn btn-ghost" href="#top">Haut</a>
             </div>
           </div>
@@ -568,7 +366,7 @@
             <div class="footer-links">
               <a href="#formations">Formations</a>
               <a href="#parcours">Parcours</a>
-              <a href="#methode">Méthode</a>
+              <a href="#methode-immersive">Méthode</a>
               <a href="#formats">Formats</a>
               <a href="#contact">Contact</a>
             </div>
@@ -582,7 +380,6 @@
         </footer>
       </div>
     </section>
-
   </main>
 
   <script src="script.js"></script>
