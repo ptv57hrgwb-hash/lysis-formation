@@ -3,11 +3,11 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  // ===== Footer year
+  // Footer year
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  // ===== Mobile nav
+  // Mobile nav
   const navToggle = $(".nav-toggle");
   const navMenu = $("#navMenu");
   if (navToggle && navMenu) {
@@ -22,15 +22,13 @@
 
     navToggle.addEventListener("click", (e) => {
       e.preventDefault();
-      const isOpen = navMenu.classList.contains("is-open");
-      isOpen ? closeMenu() : openMenu();
+      navMenu.classList.contains("is-open") ? closeMenu() : openMenu();
     });
 
     document.addEventListener("click", (e) => {
       if (!navMenu.classList.contains("is-open")) return;
       const t = e.target;
-      const clickedInside = navMenu.contains(t) || navToggle.contains(t);
-      if (!clickedInside) closeMenu();
+      if (!(navMenu.contains(t) || navToggle.contains(t))) closeMenu();
     });
 
     $$("a", navMenu).forEach((a) => a.addEventListener("click", closeMenu));
@@ -39,21 +37,17 @@
     });
   }
 
-  // ===== Reveal on scroll (generic)
+  // Reveal on scroll
   const revealEls = $$("[data-reveal]");
   if (revealEls.length) {
     const revealIO = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("is-visible");
-        });
-      },
+      (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
       { threshold: 0.15 }
     );
     revealEls.forEach((el) => revealIO.observe(el));
   }
 
-  // ===== Level picker
+  // Level picker
   const levelHelper = $("#levelHelper");
   const metricLevel = $("#metricLevel");
   const metricFocus = $("#metricFocus");
@@ -93,9 +87,9 @@
       result: "Un rendu qui tient partout",
       checklist: [
         "Balance tonale & références",
-        "Glue / profondeur",
         "Contrôle et validation",
-        "Pré-master propre",
+        "Exports (stems / versions)",
+        "Routine de fin",
       ],
     },
   };
@@ -115,16 +109,12 @@
     if (metricFocus) metricFocus.textContent = data.focus;
     if (metricResult) metricResult.textContent = data.result;
 
-    if (heroChecklist) {
-      heroChecklist.innerHTML = data.checklist.map((t) => `<li>${t}</li>`).join("");
-    }
+    if (heroChecklist) heroChecklist.innerHTML = data.checklist.map((t) => `<li>${t}</li>`).join("");
   };
 
-  levelBtns.forEach((btn) => {
-    btn.addEventListener("click", () => setLevel(btn.dataset.level));
-  });
+  levelBtns.forEach((btn) => btn.addEventListener("click", () => setLevel(btn.dataset.level)));
 
-  // ===== Sticky story (refonte claire : sommaire + chapitres)
+  // Sticky story (sommaire + chapitres)
   const story = $(".sticky-story");
   const media = $(".sticky-story__media");
   const steps = $$("[data-step]", story || document);
@@ -139,7 +129,6 @@
   ];
 
   const setProgress = (idx) => {
-    // 3 étapes => 0%, 50%, 100%
     const pct = idx <= 0 ? 0 : idx === 1 ? 50 : 100;
     if (story) story.style.setProperty("--progress", `${pct}%`);
   };
@@ -148,13 +137,11 @@
     navItems.forEach((it) => it.classList.remove("is-active"));
     const el = navItems.find((x) => Number(x.dataset.left) === idx);
     if (el) el.classList.add("is-active");
-
     if (stickySub && SUBS[idx]) stickySub.textContent = SUBS[idx];
     setProgress(idx);
   };
 
   if (story) {
-    // Show/hide left panel only when story is in view
     const storyIO = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -174,7 +161,6 @@
     );
     storyIO.observe(story);
 
-    // Keep only ONE chapter visible at a time
     if (steps.length) {
       let currentIdx = -1;
 
@@ -191,20 +177,16 @@
           if (idx === -1 || idx === currentIdx) return;
 
           currentIdx = idx;
-
           steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
           activateLeft(idx);
         },
-        {
-          threshold: [0.25, 0.45, 0.6, 0.75],
-          rootMargin: "-10% 0px -30% 0px",
-        }
+        { threshold: [0.25, 0.45, 0.6, 0.75], rootMargin: "-10% 0px -30% 0px" }
       );
 
       steps.forEach((el) => stepIO.observe(el));
     }
 
-    // Click on left summary => scroll to chapter
+    // Click left => scroll to chapter
     navItems.forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetSel = btn.dataset.target;
@@ -214,7 +196,7 @@
       });
     });
 
-    // Subtle blur dynamics
+    // Blur dynamics
     if (media) {
       let raf = 0;
       const onScroll = () => {
@@ -238,6 +220,6 @@
     }
   }
 
-  // ===== Default level (safe)
+  // Default level
   setLevel("debutant");
 })();
