@@ -1052,5 +1052,62 @@ img, svg{ max-width:100%; height:auto; display:block; }
     transition:none !important;
   }
 }
+/* ===== Contact form (Formspree) ===== */
+.contact-form { margin-top: 18px; }
+
+.form-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field { display: grid; gap: 6px; }
+
+.field-full { grid-column: 1 / -1; }
+
+.field label{
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.field input,
+.field textarea,
+.field select{
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.22);
+  color: inherit;
+  outline: none;
+}
+
+.field textarea { resize: vertical; min-height: 120px; }
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+  border-color: rgba(255,255,255,0.28);
+}
+
+.form-status{
+  margin-top: 10px;
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+/* Honeypot invisible */
+.hp-field{
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+}
+
+/* Mobile */
+@media (max-width: 720px){
+  .form-grid{ grid-template-columns: 1fr; }
+}
 
 
