@@ -59,7 +59,7 @@ const copyByLevel = {
     ]
   },
   intermediaire: {
-    helper: "Méthode, organisation, rendu plus cohérent : arrêter de tâtonner et décider plus vite.",
+    helper: "Méthode, organisation, rendu plus cohérent : décider plus vite et arrêter de tâtonner.",
     level: "Intermédiaire",
     focus: "Méthode & décisions",
     result: "Un rendu plus cohérent",
@@ -103,12 +103,6 @@ function setActiveLevel(level) {
   if (metricFocus) metricFocus.textContent = data.focus;
   if (metricResult) metricResult.textContent = data.result;
   setChecklist(data.list);
-
-  const card = document.querySelector(`[data-level-card="${level}"]`);
-  if (card) {
-    card.classList.add("pulse");
-    setTimeout(() => card.classList.remove("pulse"), 450);
-  }
 }
 
 levelButtons.forEach(btn => {
@@ -117,26 +111,22 @@ levelButtons.forEach(btn => {
 
 setActiveLevel("debutant");
 
-const style = document.createElement("style");
-style.textContent = `.pulse{ outline: 2px solid rgba(104,242,198,.35); outline-offset: 3px; }`;
-document.head.appendChild(style);
-
-// ===== Sticky story blur (Apple-like) =====
+// ===== Sticky story blur + intro replacement =====
 const story = document.querySelector(".sticky-story");
 if (story) {
   const steps = Array.from(story.querySelectorAll("[data-step]"));
 
-  // Steps appear
+  // Steps appear (arrive par le bas) : observer
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => e.target.classList.toggle("is-visible", e.isIntersecting));
   }, { threshold: 0.25 });
   steps.forEach(s => io.observe(s));
 
-  // Blur progress
   let ticking = false;
 
   function updateStory() {
     ticking = false;
+
     const rect = story.getBoundingClientRect();
     const vh = window.innerHeight || 1;
 
@@ -144,10 +134,18 @@ if (story) {
     const raw = (-rect.top) / (total <= 0 ? 1 : total);
     const t = Math.max(0, Math.min(1, raw));
 
+    // courbe douce
     const eased = t * t * (3 - 2 * t);
-    const blurPx = 18 * eased; // 0..18px
 
+    // Flou image (ajuste ici si tu veux)
+    const blurPx = 22 * eased; // 0..22px
     story.style.setProperty("--blur", `${blurPx}px`);
+
+    // Intro overlay : monte + s'efface (remplacé par les steps)
+    const introAlpha = 1 - Math.min(1, eased * 1.25);
+    const introLift = 34 * eased;
+    story.style.setProperty("--introAlpha", `${introAlpha}`);
+    story.style.setProperty("--introLift", `${introLift}px`);
   }
 
   function onScroll() {
