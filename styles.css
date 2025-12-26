@@ -608,21 +608,25 @@ p{ line-height:1.7; }
   z-index: 2;
 }
 
-..sticky-story__media{
+.sticky-story__media{
   position: sticky;
   top: 0;
   height: 100vh;
   width: 100%;
   z-index: 0;
 
-  background: var(--bg-photo) center / cover no-repeat;
+  /* IMPORTANT: background-image + variable */
+  background-image: var(--bg-photo);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
   opacity: var(--bg-photo-opacity, .55);
 
   filter: blur(var(--blur, 0px)) saturate(1.1) contrast(1.05);
   transform: scale(calc(1.02 + var(--blur, 0px) / 120));
   will-change: filter, transform;
 }
-
 
 /* voile lisibilité (image dessous, texte dessus) */
 .sticky-story::after{
