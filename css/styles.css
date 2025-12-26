@@ -31,6 +31,7 @@ body{
 a{ color:inherit; text-decoration:none; }
 p{ line-height:1.7; }
 h1,h2,h3{ letter-spacing:-.02em; }
+img, svg{ max-width:100%; height:auto; display:block; }
 
 .container{ width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
 
@@ -141,9 +142,15 @@ h1,h2,h3{ letter-spacing:-.02em; }
 }
 
 /* Photo background system */
-.section-photo{ position: relative; overflow: hidden; }
+.section-photo{
+  position: relative;
+  overflow: hidden;
+  isolation: isolate; /* garde les overlays propres */
+}
 .section-photo::before{
   content:""; position:absolute; inset:0;
+  z-index:0;
+  pointer-events:none;
   background-image: var(--bg-photo);
   background-position:center;
   background-size:cover;
@@ -152,20 +159,21 @@ h1,h2,h3{ letter-spacing:-.02em; }
   filter: saturate(1.10) contrast(1.07) brightness(1.05);
   transform: scale(1.03);
 }
-/* Background presets (.webp) */
-.bg-hero{ --bg-photo: url("../assets/bg-hero.webp"); }
-.bg-pro{ --bg-photo: url("../assets/bg-pro.webp"); }
-.bg-contact{ --bg-photo: url("../assets/bg-contact.webp"); 
-}
-
 .section-photo::after{
   content:""; position:absolute; inset:0;
+  z-index:1;
+  pointer-events:none;
   background:
     radial-gradient(900px 520px at 20% 20%, rgba(104,242,198,.16), transparent 60%),
     radial-gradient(900px 520px at 85% 25%, rgba(122,167,255,.16), transparent 65%),
     linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.72));
 }
-.section-photo > .container{ position:relative; z-index:1; }
+.section-photo > .container{ position:relative; z-index:2; }
+
+/* Background presets (.webp) */
+.bg-hero{ --bg-photo: url("../assets/bg-hero.webp"); }
+.bg-pro{ --bg-photo: url("../assets/bg-pro.webp"); }
+.bg-contact{ --bg-photo: url("../assets/bg-contact.webp"); }
 
 /* Titles */
 .section-head{ margin-bottom:22px; }
@@ -493,9 +501,16 @@ h1,h2,h3{ letter-spacing:-.02em; }
   position: relative;
   padding: 0;
   min-height: 200vh;
-  overflow: clip;
+
+  /* iOS/Safari safety */
+  overflow: hidden;
+
   z-index: 2;
   background:#000;
+}
+/* If supported, clip is fine (slightly better perf) */
+@supports (overflow: clip){
+  .sticky-story{ overflow: clip; }
 }
 
 .sticky-story__media{
@@ -671,4 +686,12 @@ h1,h2,h3{ letter-spacing:-.02em; }
   .sticky-left__item{ position: relative; }
 }
 
-
+/* Motion safety */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  [data-reveal], .story-step, .seg-btn, .btn, .nav-menu a{
+    transition:none !important;
+    transform:none !important;
+    filter:none !important;
+  }
+}
