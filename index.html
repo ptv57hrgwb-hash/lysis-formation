@@ -49,7 +49,7 @@
 
   <main id="content">
     <!-- HERO -->
-    <section class="hero section section-photo" style="--bg-photo: url('assets/bg-hero.webp'); --bg-photo-opacity:.42;">
+    <section class="hero section section-photo bg-hero" style="--bg-photo-opacity:.42;">
       <div class="container hero-grid">
         <div class="hero-copy">
           <div class="eyebrow" data-reveal>Logic Pro 11 • Mixage • Prise de son • Réalisation</div>
@@ -71,9 +71,9 @@
           <div class="level-picker" data-reveal>
             <div class="level-picker-title">Niveau</div>
             <div class="segmented" role="tablist" aria-label="Choisir un niveau">
-              <button class="seg-btn is-active" data-level="debutant" role="tab" aria-selected="true">Débutant</button>
-              <button class="seg-btn" data-level="intermediaire" role="tab" aria-selected="false">Intermédiaire</button>
-              <button class="seg-btn" data-level="avance" role="tab" aria-selected="false">Avancé / Pro</button>
+              <button class="seg-btn is-active" data-level="debutant" role="tab" aria-selected="true" type="button">Débutant</button>
+              <button class="seg-btn" data-level="intermediaire" role="tab" aria-selected="false" type="button">Intermédiaire</button>
+              <button class="seg-btn" data-level="avance" role="tab" aria-selected="false" type="button">Avancé / Pro</button>
             </div>
             <p class="level-helper" id="levelHelper">
               Bases solides + autonomie sur Logic Pro 11, avec une méthode simple et efficace.
@@ -134,9 +134,10 @@
     </section>
 
     <!-- STICKY / BLUR STORY -->
-    <section class="sticky-story" id="methode-immersive" aria-label="Méthode immersive">
-      <div class="sticky-story__media" style="--bg-photo: url('assets/bg-pro.webp');" aria-hidden="true"></div>
+    <section class="sticky-story bg-pro" id="methode-immersive" aria-label="Méthode immersive">
+      <div class="sticky-story__media" aria-hidden="true"></div>
 
+      <!-- Texte déjà présent sur la photo (gauche) -->
       <div class="sticky-left" aria-hidden="true">
         <div class="sticky-left__stack">
           <div class="sticky-left__item is-active" data-left="0">
@@ -168,6 +169,7 @@
         </div>
       </div>
 
+      <!-- Bulles claires (glass) -->
       <div class="container sticky-story__content">
         <div class="sticky-story__spacer" aria-hidden="true"></div>
 
@@ -302,7 +304,7 @@
     </section>
 
     <!-- CONTACT -->
-    <section class="section section-photo" id="contact" style="--bg-photo: url('assets/bg-contact.webp'); --bg-photo-opacity:.38;">
+    <section class="section section-photo bg-contact" id="contact" style="--bg-photo-opacity:.38;">
       <div class="container">
         <div class="contact-card" data-reveal>
           <div class="contact-copy">
@@ -312,14 +314,12 @@
             <div class="contact-rows">
               <div class="contact-row">
                 <div class="contact-label">Email</div>
-                <a class="contact-value" href="mailto:lysis.asso@gmail.com">lysis.asso.gmail.com</a>
+                <a class="contact-value" href="mailto:lysis.asso.gmail.com">lysis.asso.gmail.com</a>
               </div>
-
               <div class="contact-row">
                 <div class="contact-label">Sujet</div>
                 <div class="contact-value">Formation Logic / Mix / Prise de son / Réalisation</div>
               </div>
-
               <div class="contact-row">
                 <div class="contact-label">Message</div>
                 <div class="contact-value">“Niveau … — objectif … — blocage …”</div>
@@ -328,7 +328,7 @@
 
             <div class="contact-actions">
               <a class="btn btn-primary"
-                 href="mailto:lysis.asso@gmail.com?subject=Demande%20d%27info%20formation&body=Bonjour%2C%0A%0ANiveau%20%3A%20...%0AObjectif%20%3A%20...%0ABlocage%20%3A%20...%0A%0AMerci%20!">Écrire</a>
+                 href="mailto:lysis.asso.gmail.com?subject=Demande%20d%27info%20formation&body=Bonjour%2C%0A%0ANiveau%20%3A%20...%0AObjectif%20%3A%20...%0ABlocage%20%3A%20...%0A%0AMerci%20!">Écrire</a>
               <a class="btn btn-ghost" href="#top">Haut</a>
             </div>
           </div>
@@ -362,7 +362,6 @@
               <div class="footer-brand">Lysis</div>
               <div class="footer-note">Formations MAO • Mixage • Prise de son • Réalisation</div>
             </div>
-
             <div class="footer-links">
               <a href="#formations">Formations</a>
               <a href="#parcours">Parcours</a>
@@ -375,7 +374,7 @@
           <div class="footer-bottom">
             <span>© <span id="year"></span> Lysis</span>
             <span class="dot">•</span>
-            <a href="mailto:lysis.asso@gmail.com">lysis.asso.gmail.com</a>
+            <a href="mailto:lysis.asso.gmail.com">lysis.asso.gmail.com</a>
           </div>
         </footer>
       </div>
