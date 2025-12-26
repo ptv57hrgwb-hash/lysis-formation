@@ -8,7 +8,6 @@ if (toggle && menu) {
     toggle.setAttribute("aria-expanded", String(open));
   });
 
-  // Close menu when clicking a link (mobile)
   menu.querySelectorAll("a").forEach(a => {
     a.addEventListener("click", () => {
       menu.classList.remove("is-open");
@@ -19,7 +18,6 @@ if (toggle && menu) {
 
 // ----- Reveal on scroll (repeatable)
 const revealEls = Array.from(document.querySelectorAll("[data-reveal]"));
-
 function applyVisibility() {
   const vh = window.innerHeight || 0;
   revealEls.forEach(el => {
@@ -28,7 +26,6 @@ function applyVisibility() {
     el.classList.toggle("is-visible", visible);
   });
 }
-
 window.addEventListener("scroll", applyVisibility, { passive: true });
 window.addEventListener("resize", applyVisibility);
 applyVisibility();
@@ -51,36 +48,21 @@ const copyByLevel = {
     level: "Débutant",
     focus: "Autonomie & workflow",
     result: "Un projet propre et clair",
-    list: [
-      "Interface & workflow Logic Pro",
-      "Enregistrer / éditer proprement",
-      "Structurer un morceau",
-      "Exporter sans surprise"
-    ]
+    list: ["Interface & workflow Logic Pro", "Enregistrer / éditer proprement", "Structurer un morceau", "Exporter sans surprise"]
   },
   intermediaire: {
     helper: "Méthode, organisation, rendu plus cohérent : décider plus vite et arrêter de tâtonner.",
     level: "Intermédiaire",
     focus: "Méthode & décisions",
     result: "Un rendu plus cohérent",
-    list: [
-      "Gain staging & équilibre",
-      "Espace (pan / depth)",
-      "Automation & transitions",
-      "Organisation de session"
-    ]
+    list: ["Gain staging & équilibre", "Espace (pan / depth)", "Automation & transitions", "Organisation de session"]
   },
   avance: {
     helper: "Cap pro : translation, profondeur, glue, signature. Un mix qui tient partout et une méthode durable.",
     level: "Avancé / Pro",
     focus: "Finition & signature",
     result: "Mix final “tient partout”",
-    list: [
-      "Translation & références",
-      "Balance tonale & profondeur",
-      "Glue / cohésion",
-      "Pré-master propre"
-    ]
+    list: ["Translation & références", "Balance tonale & profondeur", "Glue / cohésion", "Pré-master propre"]
   }
 };
 
@@ -88,7 +70,6 @@ function setChecklist(items) {
   if (!heroChecklist) return;
   heroChecklist.innerHTML = items.map(i => `<li>${i}</li>`).join("");
 }
-
 function setActiveLevel(level) {
   levelButtons.forEach(btn => {
     const active = btn.dataset.level === level;
@@ -97,36 +78,35 @@ function setActiveLevel(level) {
   });
 
   const data = copyByLevel[level] || copyByLevel.debutant;
-
   if (helper) helper.textContent = data.helper;
   if (metricLevel) metricLevel.textContent = data.level;
   if (metricFocus) metricFocus.textContent = data.focus;
   if (metricResult) metricResult.textContent = data.result;
   setChecklist(data.list);
 }
-
-levelButtons.forEach(btn => {
-  btn.addEventListener("click", () => setActiveLevel(btn.dataset.level));
-});
-
+levelButtons.forEach(btn => btn.addEventListener("click", () => setActiveLevel(btn.dataset.level)));
 setActiveLevel("debutant");
 
-// ===== Sticky story blur + intro replacement =====
+// ===== Sticky story blur + left replacement =====
 const story = document.querySelector(".sticky-story");
 if (story) {
   const steps = Array.from(story.querySelectorAll("[data-step]"));
+  const leftItems = Array.from(document.querySelectorAll(".sticky-left__item"));
 
-  // Steps appear (arrive par le bas) : observer
+  // Steps appear
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => e.target.classList.toggle("is-visible", e.isIntersecting));
   }, { threshold: 0.25 });
   steps.forEach(s => io.observe(s));
 
+  function setLeftIndex(idx) {
+    leftItems.forEach(el => el.classList.toggle("is-active", Number(el.dataset.left) === idx));
+  }
+
   let ticking = false;
 
   function updateStory() {
     ticking = false;
-
     const rect = story.getBoundingClientRect();
     const vh = window.innerHeight || 1;
 
@@ -134,18 +114,21 @@ if (story) {
     const raw = (-rect.top) / (total <= 0 ? 1 : total);
     const t = Math.max(0, Math.min(1, raw));
 
-    // courbe douce
+    // Smoothstep
     const eased = t * t * (3 - 2 * t);
 
-    // Flou image (ajuste ici si tu veux)
-    const blurPx = 22 * eased; // 0..22px
+    // Blur image
+    const blurPx = 24 * eased; // 0..24px
     story.style.setProperty("--blur", `${blurPx}px`);
 
-    // Intro overlay : monte + s'efface (remplacé par les steps)
-    const introAlpha = 1 - Math.min(1, eased * 1.25);
-    const introLift = 34 * eased;
-    story.style.setProperty("--introAlpha", `${introAlpha}`);
-    story.style.setProperty("--introLift", `${introLift}px`);
+    // Left replacement (4 états)
+    // 0: intro, 1: clarté, 2: pratique, 3: finition
+    const idx =
+      t < 0.18 ? 0 :
+      t < 0.44 ? 1 :
+      t < 0.70 ? 2 : 3;
+
+    setLeftIndex(idx);
   }
 
   function onScroll() {
