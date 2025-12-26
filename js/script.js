@@ -1,4 +1,4 @@
-/* Lysis Formation — script.js (Safari Mac: click 1/2/3 => step 1/2/3 visible immediately) */
+/* Lysis Formation — script.js (Safari Mac stable clicks) */
 (() => {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -71,24 +71,14 @@
       helper: "Décisions plus rapides, session plus propre, rendu plus cohérent.",
       focus: "Équilibre & espace",
       result: "Un mix lisible et stable",
-      checklist: [
-        "Gain staging & équilibre",
-        "Pan / profondeur",
-        "Automation utile",
-        "Organisation de session",
-      ],
+      checklist: ["Gain staging & équilibre", "Pan / profondeur", "Automation utile", "Organisation de session"],
     },
     avance: {
       label: "Avancé / Pro",
       helper: "Finition : translation, cohérence, routine de validation et exports propres.",
       focus: "Finition & validation",
       result: "Un rendu fiable",
-      checklist: [
-        "Balance tonale & références",
-        "Contrôle et validation",
-        "Exports (stems / versions)",
-        "Routine de fin",
-      ],
+      checklist: ["Balance tonale & références", "Contrôle et validation", "Exports (stems / versions)", "Routine de fin"],
     },
   };
 
@@ -113,7 +103,7 @@
   levelBtns.forEach((btn) => btn.addEventListener("click", () => setLevel(btn.dataset.level)));
   setLevel("debutant");
 
-  // ===== Sticky story (Méthode)
+  // ===== Sticky story
   const story = $(".sticky-story");
   if (!story) return;
 
@@ -124,11 +114,8 @@
   const methodMobile = $("#methodMobile");
   const mmMobile = window.matchMedia("(max-width: 760px)");
 
-  // Desktop nav 1/2/3
   const navItems = $$(".sticky-nav__item", story);
   const stickySub = $("#stickySub");
-
-  // Mobile tabs
   const mobileTabs = $$(".method-tab", story);
   const mobileSub = $("#methodMobileSub");
 
@@ -140,7 +127,7 @@
 
   let currentIdx = 0;
 
-  // Lock scroll-sync after click (so click shows immediately, not overwritten)
+  // lock scroll-sync after click
   let lockUntil = 0;
   const nowMs = () => (window.performance?.now?.() || Date.now());
   const lockFor = (ms = 900) => (lockUntil = nowMs() + ms);
@@ -189,72 +176,55 @@
 
   const setPanelsVisibility = (idx) => {
     if (!steps.length) return;
-
-    if (!mmMobile.matches) {
-      // Desktop: only one panel visible
-      steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
-    } else {
-      // Mobile: keep them all visible (light version)
-      steps.forEach((s) => s.classList.add("is-visible"));
-    }
+    if (!mmMobile.matches) steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
+    else steps.forEach((s) => s.classList.add("is-visible"));
   };
 
-  // Click => show NOW + scroll to it
   const goToStep = (idx) => {
     idx = Math.max(0, Math.min(steps.length - 1, idx));
     currentIdx = idx;
 
-    // Ensure the section feels active immediately
     story.classList.add("is-inview");
-
-    // Show immediately (no waiting for scroll)
     setPanelsVisibility(idx);
     activateUI(idx);
 
-    // Avoid scroll-sync overriding right after click
     lockFor(950);
 
-    // Safari-friendly: scroll + nudge
     requestAnimationFrame(() => {
       scrollToEl(steps[idx]);
       setTimeout(() => scrollToEl(steps[idx]), 80);
     });
   };
 
-  // Bind desktop 1/2/3 (data-left = 0/1/2)
+  // Bind desktop 1/2/3 (click only)
   navItems.forEach((btn) => {
-    const handler = (e) => {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       const idx = Number(btn.dataset.left);
       if (!Number.isFinite(idx)) return;
       goToStep(idx);
-    };
-    btn.addEventListener("click", handler);
-    btn.addEventListener("pointerup", handler);
+    });
   });
 
-  // Bind mobile tabs (data-step = 0/1/2)
+  // Bind mobile tabs (click only)
   mobileTabs.forEach((btn) => {
-    const handler = (e) => {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       const idx = Number(btn.dataset.step);
       if (!Number.isFinite(idx)) return;
       goToStep(idx);
-    };
-    btn.addEventListener("click", handler);
-    btn.addEventListener("pointerup", handler);
+    });
   });
 
-  // Scroll-sync (when user scrolls normally)
+  // Scroll-sync
   let raf = 0;
 
   const computeInView = () => {
     const rect = story.getBoundingClientRect();
     const vh = window.innerHeight || 1;
 
-    // Enters later, exits earlier (Safari friendly)
     const enterLine = vh * 0.22;
     const leaveLine = vh * 0.80;
 
@@ -288,7 +258,6 @@
       const inview = computeInView();
       if (!inview) return;
 
-      // Do not override after click
       if (isLocked()) return;
 
       const idx = pickActiveStep();
@@ -298,7 +267,6 @@
         activateUI(idx);
       }
 
-      // Blur dynamics (desktop only)
       if (media && !mmMobile.matches) {
         const rect = story.getBoundingClientRect();
         const vh = window.innerHeight || 1;
