@@ -31,7 +31,7 @@
       </a>
 
       <nav class="nav" aria-label="Navigation principale">
-        <button class="nav-toggle" aria-controls="navMenu" aria-expanded="false" type="button">
+        <button class="nav-toggle" aria-controls="navMenu" aria-expanded="false">
           <span class="nav-toggle-lines" aria-hidden="true"></span>
           <span class="sr-only">Ouvrir le menu</span>
         </button>
@@ -71,9 +71,9 @@
           <div class="level-picker" data-reveal>
             <div class="level-picker-title">Niveau</div>
             <div class="segmented" role="tablist" aria-label="Choisir un niveau">
-              <button class="seg-btn is-active" data-level="debutant" role="tab" aria-selected="true" type="button">Débutant</button>
-              <button class="seg-btn" data-level="intermediaire" role="tab" aria-selected="false" type="button">Intermédiaire</button>
-              <button class="seg-btn" data-level="avance" role="tab" aria-selected="false" type="button">Avancé / Pro</button>
+              <button class="seg-btn is-active" data-level="debutant" role="tab" aria-selected="true">Débutant</button>
+              <button class="seg-btn" data-level="intermediaire" role="tab" aria-selected="false">Intermédiaire</button>
+              <button class="seg-btn" data-level="avance" role="tab" aria-selected="false">Avancé / Pro</button>
             </div>
             <p class="level-helper" id="levelHelper">
               Bases solides + autonomie sur Logic Pro 11, avec une méthode simple et efficace.
@@ -137,16 +137,18 @@
     <section class="sticky-story" id="methode-immersive" aria-label="Méthode immersive">
       <div class="sticky-story__media bg-pro" aria-hidden="true"></div>
 
-      <!-- Texte (gauche) : doit apparaître UNIQUEMENT pendant la 2e photo -->
+      <!-- Texte gauche (ne doit apparaître QUE pendant cette section) -->
       <div class="sticky-left" aria-hidden="true">
         <div class="sticky-left__stack">
-          <!-- IMPORTANT : pas de is-active au chargement -->
           <div class="sticky-left__item" data-left="0">
             <div class="sticky-kicker">Méthode de formation</div>
             <h2 class="sticky-title">Comprendre. Pratiquer. Finaliser.</h2>
             <p class="sticky-sub">Progression claire : workflow, écoute, décisions. Objectif : résultat solide.</p>
             <div class="sticky-pills">
-              <span class="pill">Logic Pro 11</span><span class="pill">Mixage</span><span class="pill">Prise de son</span><span class="pill">Réalisation</span>
+              <span class="pill">Logic Pro 11</span>
+              <span class="pill">Mixage</span>
+              <span class="pill">Prise de son</span>
+              <span class="pill">Réalisation</span>
             </div>
           </div>
 
@@ -170,27 +172,27 @@
         </div>
       </div>
 
-      <!-- Bulles claires (glass) -->
+      <!-- Contenu scroll (sert de repères pour activer les steps) -->
       <div class="container sticky-story__content">
         <div class="sticky-story__spacer" aria-hidden="true"></div>
 
         <div class="story-step" data-step>
-          <h3>1) Clarté</h3>
+          <h3 class="step-title">1) Clarté</h3>
           <p>On comprend ce qui compte : gain staging, espace, priorités et contrôle.</p>
         </div>
 
         <div class="story-step" data-step>
-          <h3>2) Pratique</h3>
+          <h3 class="step-title">2) Pratique</h3>
           <p>Exercices utiles + retours précis. Le workflow devient fluide et propre.</p>
         </div>
 
         <div class="story-step" data-step>
-          <h3>3) Finition</h3>
+          <h3 class="step-title">3) Finition</h3>
           <p>Translation, cohérence, routine de validation : un rendu qui tient partout.</p>
         </div>
 
         <div class="story-step story-cta" data-step>
-          <h3>Choisir un parcours</h3>
+          <h3 class="step-title">Choisir un parcours</h3>
           <p>Débutant, intermédiaire, avancé : un point de départ clair, des objectifs concrets.</p>
           <div class="story-cta-actions">
             <a class="btn btn-primary" href="#parcours">Parcours</a>
@@ -315,7 +317,7 @@
             <div class="contact-rows">
               <div class="contact-row">
                 <div class="contact-label">Email</div>
-                <a class="contact-value js-email-link" data-email="lysis.asso.gmail.com" href="#">lysis.asso.gmail.com</a>
+                <a class="contact-value" href="mailto:lysis.asso.gmail.com">lysis.asso.gmail.com</a>
               </div>
               <div class="contact-row">
                 <div class="contact-label">Sujet</div>
@@ -328,11 +330,8 @@
             </div>
 
             <div class="contact-actions">
-              <a class="btn btn-primary js-email-cta"
-                 data-email="lysis.asso.gmail.com"
-                 data-subject="Demande d'info formation"
-                 data-body="Bonjour,%0A%0ANiveau : ...%0AObjectif : ...%0ABlocage : ...%0A%0AMerci !"
-                 href="#">Écrire</a>
+              <a class="btn btn-primary"
+                 href="mailto:lysis.asso.gmail.com?subject=Demande%20d%27info%20formation&body=Bonjour%2C%0A%0ANiveau%20%3A%20...%0AObjectif%20%3A%20...%0ABlocage%20%3A%20...%0A%0AMerci%20!">Écrire</a>
               <a class="btn btn-ghost" href="#top">Haut</a>
             </div>
           </div>
@@ -378,7 +377,7 @@
           <div class="footer-bottom">
             <span>© <span id="year"></span> Lysis</span>
             <span class="dot">•</span>
-            <a class="js-email-link" data-email="lysis.asso.gmail.com" href="#">lysis.asso.gmail.com</a>
+            <a href="mailto:lysis.asso.gmail.com">lysis.asso.gmail.com</a>
           </div>
         </footer>
       </div>
