@@ -757,6 +757,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
 .sticky-nav{ position: relative; }
 .sticky-nav__item{ position: relative; z-index: 2; }
 .sticky-nav__progress{ position: absolute; z-index: 1; }
+
 /* --- FIX Safari Mac: le panneau gauche doit rester au-dessus (clics 1/2/3) --- */
 .sticky-left{
   z-index: 999 !important;
