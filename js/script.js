@@ -64,33 +64,56 @@
     );
     revealEls.forEach((el) => io.observe(el));
 
-    // ===== Story steps reveal + sync left stack
-    const steps = $$("[data-step]");
-    const leftItems = $$(".sticky-left__item");
-    const activateLeft = (idx) => {
-      leftItems.forEach((it) => it.classList.remove("is-active"));
-      const el = leftItems.find((x) => Number(x.dataset.left) === idx);
-      if (el) el.classList.add("is-active");
-    };
+ // ===== Story steps reveal + sync left stack (only visible during sticky section)
+const stickySection = $(".sticky-story");
+const steps = $$("[data-step]");
+const leftItems = $$(".sticky-left__item");
 
-    const stepIO = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
+const activateLeft = (idx) => {
+  leftItems.forEach((it) => it.classList.remove("is-active"));
+  const el = leftItems.find((x) => Number(x.dataset.left) === idx);
+  if (el) el.classList.add("is-active");
+};
 
-          const idx = steps.indexOf(entry.target);
-          // mapping: step 0->left 1, step1->left 2, step2->left 3, step3(CTA)->left 0 (ou garder 3)
-          if (idx === 0) activateLeft(1);
-          else if (idx === 1) activateLeft(2);
-          else if (idx === 2) activateLeft(3);
-          else activateLeft(0);
-        });
-      },
-      { threshold: 0.55 }
-    );
+// Affiche/masque le texte de gauche uniquement pendant la section sticky (2e photo)
+if (stickySection) {
+  const sectionIO = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          stickySection.classList.add("is-inview");
+          activateLeft(0); // "Comprendre. Pratiquer. Finaliser." seulement à l'entrée de la 2e photo
+        } else {
+          stickySection.classList.remove("is-inview");
+          leftItems.forEach((it) => it.classList.remove("is-active"));
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: "-10% 0px -70% 0px" }
+  );
 
-    steps.forEach((el) => stepIO.observe(el));
+  sectionIO.observe(stickySection);
+}
+
+// Change le texte au scroll des bulles (et évite de revenir sur l'intro au CTA)
+const stepIO = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      entry.target.classList.add("is-visible");
+
+      const idx = steps.indexOf(entry.target);
+      if (idx === 0) activateLeft(1);
+      else if (idx === 1) activateLeft(2);
+      else if (idx === 2) activateLeft(3);
+      else activateLeft(3); // CTA : on garde l'étape 3 (pas de retour à l'intro)
+    });
+  },
+  { threshold: 0.55 }
+);
+
+steps.forEach((el) => stepIO.observe(el));
 
     // ===== Level picker
     const levelBtns = $$(".seg-btn");
