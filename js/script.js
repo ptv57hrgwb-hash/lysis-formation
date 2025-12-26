@@ -109,14 +109,17 @@
 
     if (heroChecklist) heroChecklist.innerHTML = data.checklist.map((t) => `<li>${t}</li>`).join("");
   };
-
   levelBtns.forEach((btn) => btn.addEventListener("click", () => setLevel(btn.dataset.level)));
   setLevel("debutant");
 
-  // ===== Method section: Desktop “super” / Mobile “light + tabs”
+  // ===== Method section: Desktop “super” / Mobile “tabs”
   const story = $(".sticky-story");
   const media = $(".sticky-story__media");
   const steps = $$("[data-step]", story || document);
+
+  const header = $("#siteHeader");
+  const methodMobile = $("#methodMobile");
+  const mmMobile = window.matchMedia("(max-width: 760px)");
 
   const navItems = $$(".sticky-nav__item", story || document);
   const stickySub = $("#stickySub");
@@ -130,13 +133,11 @@
     "Validation et exports : translation, checklist finale, livrables prêts.",
   ];
 
-  const mmMobile = window.matchMedia("(max-width: 760px)");
-
   const setProgress = (idx) => {
     const pct = idx <= 0 ? 0 : idx === 1 ? 50 : 100;
     if (story) {
-      story.style.setProperty("--progress", `${pct}%`);   // desktop progress (left)
-      story.style.setProperty("--mprogress", `${pct}%`);  // mobile progress bar
+      story.style.setProperty("--progress", `${pct}%`);   // desktop
+      story.style.setProperty("--mprogress", `${pct}%`);  // mobile
     }
   };
 
@@ -162,36 +163,75 @@
     activateMobileTabs(idx);
   };
 
-  // Click => scroll to panel (both desktop left and mobile tabs)
-  const bindScrollButtons = (btns) => {
+  // --- Safari-safe scroll with offset (header + tabs)
+  const getScrollOffset = () => {
+    const h = header ? Math.round(header.getBoundingClientRect().height) : 0;
+    const m = (mmMobile.matches && methodMobile)
+      ? Math.round(methodMobile.getBoundingClientRect().height)
+      : 0;
+    return h + m + 14; // breathing space
+  };
+
+  const scrollToTarget = (targetEl) => {
+    if (!targetEl) return;
+    const y = window.scrollY + targetEl.getBoundingClientRect().top - getScrollOffset();
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+  };
+
+  const indexFromTarget = (targetEl) => {
+    if (!targetEl) return 0;
+    const s = targetEl.getAttribute("data-step");
+    const idx = s != null ? Number(s) : steps.indexOf(targetEl);
+    return Number.isFinite(idx) && idx >= 0 ? idx : 0;
+  };
+
+  // Force the step visible BEFORE scrolling (fix “buttons don’t bring bubble correctly”)
+  const goToStep = (idx) => {
+    idx = Math.max(0, Math.min(steps.length - 1, idx));
+    currentIdx = idx;
+
+    if (!mmMobile.matches) {
+      steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
+    } else {
+      steps.forEach((s) => s.classList.add("is-visible"));
+    }
+
+    activateStepUI(idx);
+    scrollToTarget(steps[idx]);
+  };
+
+  // Click bindings
+  const bindButtons = (btns) => {
     btns.forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetSel = btn.dataset.target;
         const target = targetSel ? $(targetSel) : null;
         if (!target) return;
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        const idx = indexFromTarget(target);
+        goToStep(idx);
       });
     });
   };
-  bindScrollButtons(navItems);
-  bindScrollButtons(mobileTabs);
+  bindButtons(navItems);
+  bindButtons(mobileTabs);
 
   if (story && steps.length) {
-    // show/hide desktop left panel (only relevant desktop)
-    const storyIO = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.target !== story) continue;
-          if (entry.isIntersecting) story.classList.add("is-inview");
-          else story.classList.remove("is-inview");
-        }
-      },
-      { threshold: 0.01 }
-    );
-    storyIO.observe(story);
-
+    // ----- Replace IntersectionObserver “in view” by scroll logic (Safari)
     let raf = 0;
-    let currentIdx = -1;
+    let currentIdx = 0;
+
+    const computeInView = () => {
+      const rect = story.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+
+      // Enter a bit later, leave a bit earlier (feel less “too early / too late”)
+      const enterLine = vh * 0.18; // section top must pass this
+      const leaveLine = vh * 0.40; // section bottom must be under this
+      const inview = rect.top <= enterLine && rect.bottom >= leaveLine;
+
+      story.classList.toggle("is-inview", inview);
+      return inview;
+    };
 
     const pickActiveStep = () => {
       // Choose the panel whose center is closest to viewport center
@@ -217,24 +257,22 @@
       raf = requestAnimationFrame(() => {
         raf = 0;
 
-        if (!story.classList.contains("is-inview")) return;
+        const inview = computeInView();
+        if (!inview) return;
 
         const idx = pickActiveStep();
         if (idx !== currentIdx) {
           currentIdx = idx;
 
-          // Desktop: only one panel visible
           if (!mmMobile.matches) {
             steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
           } else {
-            // Mobile: all panels visible
             steps.forEach((s) => s.classList.add("is-visible"));
           }
-
           activateStepUI(idx);
         }
 
-        // Desktop-only blur dynamics (disable on mobile)
+        // Desktop-only blur dynamics
         if (media && !mmMobile.matches) {
           const rect = story.getBoundingClientRect();
           const vh = window.innerHeight || 1;
@@ -250,13 +288,13 @@
       });
     };
 
+    // Initial state
+    steps.forEach((s, i) => s.classList.toggle("is-visible", mmMobile.matches ? true : i === 0));
+    activateStepUI(0);
+    computeInView();
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
-
-    // init
-    if (mmMobile.matches) steps.forEach((s) => s.classList.add("is-visible"));
-    else steps.forEach((s, i) => s.classList.toggle("is-visible", i === 0));
-    activateStepUI(0);
     onScroll();
   }
 })();
