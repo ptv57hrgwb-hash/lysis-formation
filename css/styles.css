@@ -13,6 +13,10 @@
   --shadow2: 0 18px 55px rgba(0,0,0,.35);
 
   --max: 1160px;
+
+  /* Sticky layout */
+  --sticky-left-w: 520px;
+  --sticky-gap: 34px;
 }
 
 *{ box-sizing:border-box; }
@@ -27,6 +31,7 @@ body{
   color: var(--text);
   overflow-x:hidden;
 }
+
 a{ color:inherit; text-decoration:none; }
 p{ line-height:1.7; }
 h1,h2,h3{ letter-spacing:-.02em; }
@@ -495,7 +500,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
   filter: blur(0) !important;
 }
 
-/* ===== Sticky story (safe iOS/Safari + no side reflections + lighter bubbles) ===== */
+/* ===== Sticky story ===== */
 .sticky-story{
   position: relative;
   padding: 0;
@@ -560,26 +565,24 @@ img, svg{ max-width:100%; height:auto; display:block; }
     );
 }
 
-/* Left overlay */
+/* IMPORTANT: hide left block unless the sticky section is in view */
 .sticky-left{
   position: fixed;
   left: max(20px, calc((100vw - var(--max)) / 2));
   top: 20vh;
-  width: min(520px, calc(100vw - 40px));
+  width: min(var(--sticky-left-w), calc(100vw - 40px));
   z-index: 6;
   pointer-events: none;
 
-  /* Hidden by default: only visible while sticky section is in view */
   opacity: 0;
   visibility: hidden;
-  transform: translateY(12px);
-  transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
+  transform: translateY(10px);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s ease;
 }
 .sticky-story.is-inview .sticky-left{
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-  transition: opacity .25s ease, transform .25s ease, visibility 0s;
 }
 
 .sticky-left__stack{ position: relative; }
@@ -588,7 +591,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
   position:absolute;
   inset:0;
   opacity:0;
-  transform: translateY(34px);
+  transform: translateY(26px);
   filter: blur(2px);
   transition: opacity .35s ease, transform .35s ease, filter .35s ease;
 }
@@ -621,10 +624,17 @@ img, svg{ max-width:100%; height:auto; display:block; }
 }
 .sticky-pills{ display:flex; flex-wrap:wrap; gap:10px; }
 
-.sticky-story__content{ position:relative; z-index: 7; padding: 84px 0; }
+.sticky-story__content{
+  position:relative;
+  z-index: 7;
+  padding: 84px 0;
+
+  /* push steps a bit right so it "reads" better with the left overlay */
+  padding-left: min(calc(var(--sticky-left-w) + var(--sticky-gap)), 48vw);
+}
 .sticky-story__spacer{ height: 38vh; }
 
-/* Lighter bubbles */
+/* Steps (only one visible at a time via JS) */
 .story-step{
   max-width: 70ch;
   margin: 0 auto 18px;
@@ -639,14 +649,17 @@ img, svg{ max-width:100%; height:auto; display:block; }
   opacity: 0;
   transform: translateY(34px);
   filter: blur(2px);
-  transition: opacity .55s ease, transform .55s ease, filter .55s ease;
+  transition: opacity .45s ease, transform .45s ease, filter .45s ease;
 }
 .story-step.is-visible{
   opacity:1;
   transform: translateY(0);
   filter: blur(0);
 }
-.story-step h3{ margin:0 0 8px; }
+.step-title{
+  margin:0 0 8px;
+  opacity:.9;
+}
 .story-step p{
   margin:0;
   color: rgba(233,238,246,.92);
@@ -660,6 +673,8 @@ img, svg{ max-width:100%; height:auto; display:block; }
   .cards-4{ grid-template-columns: repeat(2, 1fr); }
   .cards-3{ grid-template-columns: 1fr; }
   .contact-card{ grid-template-columns: 1fr; }
+
+  .sticky-story__content{ padding-left: 0; }
 }
 
 @media (max-width: 760px){
