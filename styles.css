@@ -677,3 +677,33 @@ p{ line-height:1.7; }
   .two-col{ grid-template-columns: 1fr; }
   .cards-4{ grid-template-columns: 1fr; }
 }
+/* Background photo system */
+.section-photo{
+  position: relative;
+  overflow: hidden;
+}
+
+.section-photo::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: var(--bg-photo) center / cover no-repeat;
+  opacity: var(--bg-photo-opacity, .22);
+  filter: saturate(1.05) contrast(1.05);
+  transform: scale(1.03);
+}
+
+.section-photo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(900px 520px at 20% 20%, rgba(104,242,198,.12), transparent 60%),
+    radial-gradient(900px 520px at 85% 25%, rgba(122,167,255,.12), transparent 65%),
+    linear-gradient(180deg, rgba(11,15,20,.86), rgba(7,10,15,.94));
+}
+
+.section-photo > .container{
+  position: relative;
+  z-index: 1;
+}
