@@ -743,3 +743,7 @@ img, svg{ max-width:100%; height:auto; display:block; }
     scroll-margin-top: 190px; /* mobile: header + tabs méthode */
   }
 }
+/* --- FIX Safari iOS: rendre le panneau gauche cliquable --- */
+.sticky-left{ pointer-events: auto !important; }
+.sticky-panel{ pointer-events: auto !important; }
+.sticky-nav, .sticky-nav__item{ pointer-events: auto !important; }
