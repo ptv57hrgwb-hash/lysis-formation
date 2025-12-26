@@ -3,11 +3,11 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  // Footer year
+  // ===== Footer year
   const yearEl = $("#year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  // Mobile nav
+  // ===== Mobile nav
   const navToggle = $(".nav-toggle");
   const navMenu = $("#navMenu");
   if (navToggle && navMenu) {
@@ -32,12 +32,10 @@
     });
 
     $$("a", navMenu).forEach((a) => a.addEventListener("click", closeMenu));
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeMenu();
-    });
+    document.addEventListener("keydown", (e) => e.key === "Escape" && closeMenu());
   }
 
-  // Reveal on scroll
+  // ===== Reveal on scroll (generic)
   const revealEls = $$("[data-reveal]");
   if (revealEls.length) {
     const revealIO = new IntersectionObserver(
@@ -47,7 +45,7 @@
     revealEls.forEach((el) => revealIO.observe(el));
   }
 
-  // Level picker
+  // ===== Level picker
   const levelHelper = $("#levelHelper");
   const metricLevel = $("#metricLevel");
   const metricFocus = $("#metricFocus");
@@ -58,7 +56,7 @@
   const LEVELS = {
     debutant: {
       label: "Débutant",
-      helper: "Bases solides + autonomie sur Logic Pro 11, avec une méthode simple et efficace.",
+      helper: "Bases solides + autonomie sur Logic Pro 11, avec une progression claire.",
       focus: "Autonomie & workflow",
       result: "Un projet propre et clair",
       checklist: [
@@ -70,7 +68,7 @@
     },
     intermediaire: {
       label: "Intermédiaire",
-      helper: "Structurer la production et le mix : décisions plus rapides, rendu plus cohérent.",
+      helper: "Décisions plus rapides, session plus propre, rendu plus cohérent.",
       focus: "Équilibre & espace",
       result: "Un mix lisible et stable",
       checklist: [
@@ -82,9 +80,9 @@
     },
     avance: {
       label: "Avancé / Pro",
-      helper: "Cap finition : translation, cohérence, routine de validation et signature.",
-      focus: "Finition & translation",
-      result: "Un rendu qui tient partout",
+      helper: "Finition : translation, cohérence, routine de validation et exports propres.",
+      focus: "Finition & validation",
+      result: "Un rendu fiable",
       checklist: [
         "Balance tonale & références",
         "Contrôle et validation",
@@ -113,8 +111,9 @@
   };
 
   levelBtns.forEach((btn) => btn.addEventListener("click", () => setLevel(btn.dataset.level)));
+  setLevel("debutant");
 
-  // Sticky story (sommaire + chapitres)
+  // ===== Method section: Desktop “super” / Mobile “light + tabs”
   const story = $(".sticky-story");
   const media = $(".sticky-story__media");
   const steps = $$("[data-step]", story || document);
@@ -122,104 +121,142 @@
   const navItems = $$(".sticky-nav__item", story || document);
   const stickySub = $("#stickySub");
 
+  const mobileTabs = $$(".method-tab", story || document);
+  const mobileSub = $("#methodMobileSub");
+
   const SUBS = [
-    "On clarifie ton objectif et on trace un plan simple (priorités, ordre, routine).",
-    "On installe des automatismes : workflow, équilibre, espace, décisions plus rapides.",
-    "On valide le rendu partout : routine de contrôle, exports propres, checklist de fin.",
+    "Diagnostic, progression, puis validation : un processus clair, sans dispersion.",
+    "Automatismes : stabilité du workflow, cohérence du rendu, décisions plus rapides.",
+    "Validation et exports : translation, checklist finale, livrables prêts.",
   ];
+
+  const mmMobile = window.matchMedia("(max-width: 760px)");
 
   const setProgress = (idx) => {
     const pct = idx <= 0 ? 0 : idx === 1 ? 50 : 100;
-    if (story) story.style.setProperty("--progress", `${pct}%`);
+    if (story) {
+      story.style.setProperty("--progress", `${pct}%`);   // desktop progress (left)
+      story.style.setProperty("--mprogress", `${pct}%`);  // mobile progress bar
+    }
   };
 
-  const activateLeft = (idx) => {
+  const activateDesktopLeft = (idx) => {
     navItems.forEach((it) => it.classList.remove("is-active"));
     const el = navItems.find((x) => Number(x.dataset.left) === idx);
     if (el) el.classList.add("is-active");
     if (stickySub && SUBS[idx]) stickySub.textContent = SUBS[idx];
-    setProgress(idx);
   };
 
-  if (story) {
-    const storyIO = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.target !== story) return;
+  const activateMobileTabs = (idx) => {
+    mobileTabs.forEach((t) => {
+      const active = Number(t.dataset.step) === idx;
+      t.classList.toggle("is-active", active);
+      t.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    if (mobileSub && SUBS[idx]) mobileSub.textContent = SUBS[idx];
+  };
 
-          if (entry.isIntersecting) {
-            story.classList.add("is-inview");
-            activateLeft(0);
-            steps.forEach((s, i) => s.classList.toggle("is-visible", i === 0));
-          } else {
-            story.classList.remove("is-inview");
-            steps.forEach((s) => s.classList.remove("is-visible"));
-          }
-        });
-      },
-      { threshold: 0.02 }
-    );
-    storyIO.observe(story);
+  const activateStepUI = (idx) => {
+    setProgress(idx);
+    activateDesktopLeft(idx);
+    activateMobileTabs(idx);
+  };
 
-    if (steps.length) {
-      let currentIdx = -1;
-
-      const stepIO = new IntersectionObserver(
-        (entries) => {
-          const visible = entries
-            .filter((e) => e.isIntersecting)
-            .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0));
-
-          if (!visible.length) return;
-
-          const top = visible[0].target;
-          const idx = steps.indexOf(top);
-          if (idx === -1 || idx === currentIdx) return;
-
-          currentIdx = idx;
-          steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
-          activateLeft(idx);
-        },
-        { threshold: [0.25, 0.45, 0.6, 0.75], rootMargin: "-10% 0px -30% 0px" }
-      );
-
-      steps.forEach((el) => stepIO.observe(el));
-    }
-
-    // Click left => scroll to chapter
-    navItems.forEach((btn) => {
+  // Click => scroll to panel (both desktop left and mobile tabs)
+  const bindScrollButtons = (btns) => {
+    btns.forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetSel = btn.dataset.target;
         const target = targetSel ? $(targetSel) : null;
         if (!target) return;
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
+  };
+  bindScrollButtons(navItems);
+  bindScrollButtons(mobileTabs);
 
-    // Blur dynamics
-    if (media) {
-      let raf = 0;
-      const onScroll = () => {
-        if (raf) return;
-        raf = requestAnimationFrame(() => {
-          raf = 0;
+  if (story && steps.length) {
+    // show/hide desktop left panel (only relevant desktop)
+    const storyIO = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.target !== story) continue;
+          if (entry.isIntersecting) story.classList.add("is-inview");
+          else story.classList.remove("is-inview");
+        }
+      },
+      { threshold: 0.01 }
+    );
+    storyIO.observe(story);
+
+    let raf = 0;
+    let currentIdx = -1;
+
+    const pickActiveStep = () => {
+      // Choose the panel whose center is closest to viewport center
+      const mid = (window.innerHeight || 1) * 0.52;
+
+      let bestIdx = 0;
+      let bestDist = Infinity;
+
+      for (let i = 0; i < steps.length; i++) {
+        const r = steps[i].getBoundingClientRect();
+        const center = r.top + r.height * 0.5;
+        const dist = Math.abs(center - mid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = i;
+        }
+      }
+      return bestIdx;
+    };
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+
+        if (!story.classList.contains("is-inview")) return;
+
+        const idx = pickActiveStep();
+        if (idx !== currentIdx) {
+          currentIdx = idx;
+
+          // Desktop: only one panel visible
+          if (!mmMobile.matches) {
+            steps.forEach((s, i) => s.classList.toggle("is-visible", i === idx));
+          } else {
+            // Mobile: all panels visible
+            steps.forEach((s) => s.classList.add("is-visible"));
+          }
+
+          activateStepUI(idx);
+        }
+
+        // Desktop-only blur dynamics (disable on mobile)
+        if (media && !mmMobile.matches) {
           const rect = story.getBoundingClientRect();
           const vh = window.innerHeight || 1;
-
           const start = vh * 0.05;
           const end = vh * 0.95;
           const t = (start - rect.top) / Math.max(1, (rect.height - (end - start)));
           const p = Math.min(1, Math.max(0, t));
-
           const blur = (1 - p) * 2;
           media.style.setProperty("--blur", `${blur.toFixed(2)}px`);
-        });
-      };
-      window.addEventListener("scroll", onScroll, { passive: true });
-      onScroll();
-    }
-  }
+        } else if (media) {
+          media.style.setProperty("--blur", "0px");
+        }
+      });
+    };
 
-  // Default level
-  setLevel("debutant");
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    // init
+    if (mmMobile.matches) steps.forEach((s) => s.classList.add("is-visible"));
+    else steps.forEach((s, i) => s.classList.toggle("is-visible", i === 0));
+    activateStepUI(0);
+    onScroll();
+  }
 })();
