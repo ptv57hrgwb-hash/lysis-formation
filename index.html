@@ -644,5 +644,88 @@
       });
     })();
   </script>
+  <!-- CONTACT MODAL -->
+<div class="modal" id="contactModal" aria-hidden="true">
+  <div class="modal__backdrop" data-close-contact></div>
+
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
+    <button class="modal__close" type="button" data-close-contact aria-label="Fermer">×</button>
+
+    <div class="modal__head">
+      <h2 id="contactModalTitle">Contact</h2>
+      <p>
+        Indiquez votre niveau, votre objectif, et si vous avez une session Logic Pro.
+        Réponse avec une proposition de format (2 jours / 10 jours / coaching).
+      </p>
+    </div>
+
+    <form
+      id="contactForm"
+      class="contact-form"
+      action="https://formspree.io/f/xaqyqneg"
+      method="POST"
+      novalidate
+    >
+      <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" />
+      <input type="hidden" name="_subject" value="Demande formation — Lysis Formation" />
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="cf-name">Nom</label>
+          <input id="cf-name" name="name" type="text" autocomplete="name" required />
+        </div>
+
+        <div class="field">
+          <label for="cf-email">Email</label>
+          <input id="cf-email" name="email" type="email" autocomplete="email" required />
+        </div>
+
+        <div class="field field-full">
+          <label for="cf-level">Niveau</label>
+          <select id="cf-level" name="niveau" required>
+            <option value="" selected disabled>Choisir…</option>
+            <option>Débutant</option>
+            <option>Intermédiaire</option>
+            <option>Avancé</option>
+            <option>Pro</option>
+          </select>
+        </div>
+
+        <div class="field field-full">
+          <label for="cf-goal">Objectif</label>
+          <input id="cf-goal" name="objectif" type="text"
+            placeholder="Ex: sortir un EP, améliorer le mix, routine d’exports…" required />
+        </div>
+
+        <div class="field field-full">
+          <label for="cf-session">Avez-vous une session Logic Pro à analyser ?</label>
+          <select id="cf-session" name="session_logicpro" required>
+            <option value="" selected disabled>Choisir…</option>
+            <option>Oui</option>
+            <option>Non</option>
+          </select>
+        </div>
+
+        <div class="field field-full">
+          <label for="cf-message">Message</label>
+          <textarea id="cf-message" name="message" rows="4" required></textarea>
+        </div>
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn btn-primary" type="submit">Envoyer la demande</button>
+        <button class="btn btn-ghost" type="button" data-close-contact>Fermer</button>
+      </div>
+
+      <p id="formStatus" class="form-status" role="status" aria-live="polite"></p>
+
+      <div class="modal__foot">
+        <span>Ou email direct :</span>
+        <a href="mailto:lysis.asso@gmail.com">lysis.asso@gmail.com</a>
+      </div>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>
