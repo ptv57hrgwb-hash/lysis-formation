@@ -605,36 +605,33 @@
         statusEl.textContent = "Envoi en cours…";
 
         const formData = new FormData(form);
-        if ((formData.get("_gotcha") || "").toString().trim() !== "") return;
 
-        const data = Object.fromEntries(formData.entries());
-        delete data._gotcha;
+        // Honeypot: si rempli => bot
+        if ((formData.get("_gotcha") || "").toString().trim() !== "") return;
 
         try {
           const res = await fetch(form.action, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-            },
-            body: JSON.stringify(data),
+            body: formData,
+            headers: { "Accept": "application/json" }
           });
+
+          const payload = await res.json().catch(() => null);
 
           if (res.ok) {
             form.reset();
             statusEl.textContent = "✅ Message envoyé. Je reviens vers vous rapidement.";
           } else {
-            let msg = "❌ Oups, impossible d’envoyer le message. Réessaie.";
-            try {
-              const payload = await res.json();
-              if (payload && payload.errors && payload.errors[0] && payload.errors[0].message) {
-                msg = "❌ " + payload.errors[0].message;
-              }
-            } catch (_) {}
-            statusEl.textContent = msg;
+            const msg =
+              payload?.errors?.[0]?.message ||
+              payload?.error ||
+              "Refus Formspree. Vérifie l’activation du formulaire et l’email validé.";
+            statusEl.textContent = "❌ " + msg;
+            console.log("Formspree error:", res.status, payload);
           }
         } catch (err) {
           statusEl.textContent = "❌ Problème réseau. Réessaie dans un instant.";
+          console.log("Network error:", err);
         }
       });
     })();
