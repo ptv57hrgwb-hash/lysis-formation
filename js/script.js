@@ -292,3 +292,89 @@
   window.addEventListener("orientationchange", () => setTimeout(onScroll, 80));
   onScroll();
 })();
+// ===== Contact modal + Formspree (AJAX) =====
+(() => {
+  const modal = document.getElementById("contactModal");
+  const panel = modal ? modal.querySelector(".modal__panel") : null;
+  const openBtns = document.querySelectorAll("[data-open-contact]");
+  const closeBtns = modal ? modal.querySelectorAll("[data-close-contact]") : [];
+  const form = document.getElementById("contactForm");
+  const statusEl = document.getElementById("formStatus");
+  if (!modal || !panel || !form || !statusEl) return;
+
+  let lastFocus = null;
+
+  const openModal = () => {
+    lastFocus = document.activeElement;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+    const first = form.querySelector("input, select, textarea, button");
+    if (first) first.focus();
+  };
+
+  const closeModal = () => {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  };
+
+  openBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openModal();
+    });
+  });
+
+  closeBtns.forEach((btn) => btn.addEventListener("click", closeModal));
+
+  document.addEventListener("keydown", (e) => {
+    if (!modal.classList.contains("is-open")) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeModal();
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!form.checkValidity()) {
+      statusEl.textContent = "⚠️ Merci de compléter tous les champs.";
+      return;
+    }
+
+    statusEl.textContent = "Envoi en cours…";
+
+    const formData = new FormData(form);
+    if ((formData.get("_gotcha") || "").toString().trim() !== "") return;
+
+    try {
+      const res = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: { "Accept": "application/json" },
+      });
+
+      const payload = await res.json().catch(() => null);
+
+      if (res.ok) {
+        form.reset();
+        statusEl.textContent = "✅ Message envoyé. Je reviens vers vous rapidement.";
+        setTimeout(closeModal, 900);
+      } else {
+        const msg =
+          payload?.errors?.[0]?.message ||
+          payload?.error ||
+          "Refus Formspree. Vérifie l’activation du formulaire.";
+        statusEl.textContent = "❌ " + msg;
+        console.log("Formspree error:", res.status, payload);
+      }
+    } catch (err) {
+      statusEl.textContent = "❌ Problème réseau. Réessaie dans un instant.";
+      console.log("Network error:", err);
+    }
+  });
+})();
+
