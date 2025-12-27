@@ -377,4 +377,23 @@
     }
   });
 })();
+// ===== Always start at home (remove hash + scroll top) =====
+(() => {
+  const goHome = () => {
+    // si on arrive avec une ancre (#formations, #contact, etc.)
+    if (location.hash) {
+      history.replaceState(null, "", location.pathname + location.search);
+    }
+    // remonte tout en haut (accueil)
+    window.scrollTo(0, 0);
+  };
+
+  // au chargement
+  window.addEventListener("load", goHome, { once: true });
+
+  // au retour navigateur (bfcache)
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) goHome();
+  });
+})();
 
